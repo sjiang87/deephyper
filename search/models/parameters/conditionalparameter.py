@@ -1,7 +1,6 @@
 from collections import OrderedDict
 
 from deephyper.search.models.parameter import Parameter
-from deephyper.search.util.compatability import set, items
 from deephyper.search.models.types.parametertype import ParameterType
 
 class ConditionalParameter(Parameter):
@@ -48,8 +47,7 @@ class ConditionalParameter(Parameter):
         # dictionary because python will only accept one of the keys attempted
         # to be inserted. Therefore, conditional parameters should be constructed
         # with distinct branch keys in the branches dictionary, per depth level.
-        branch_name_set = set()
-        for branch_name, param_list in items(self.branches):
+        for branch_name, param_list in self.branches.items():
             # Ensure that each branch exposes a list.
             if not isinstance(param_list, list):
                 raise Warning("Branches attribute of a conditional parameter "

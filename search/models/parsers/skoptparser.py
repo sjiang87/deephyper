@@ -37,18 +37,18 @@ class SKOptParser(Parser):
         # SKOpt only has native support for discrete parameters with an
         # arithmetic step type and step size of 1.
         elif param_type == ParameterType.DISCRETE:
+            drt = param.drt
             step_size = param.step_size
             step_type = param.step_type
-            repr_type = param.repr_type
 
             if step_type == StepType.ARITHMETIC and step_size == 1:
                 return Integer(low=param.low, high=param.high, name=param_name)
 
-            elif repr_type == DiscreteRepresentationType.ORDINAL:
-                return Integer(low=0, high=param.max_n(), name=param_name)
+            elif drt == DiscreteRepresentationType.ORDINAL:
+                return Integer(low=0, high=param.max_n, name=param_name)
 
-            elif repr_type == DiscreteRepresentationType.DEFAULT:
-                return Categorical(categories=param.interval_list(),
+            elif drt == DiscreteRepresentationType.DEFAULT:
+                return Categorical(categories=param.interval_list,
                                    name=param_name)
 
         elif param_type == ParameterType.NON_ORDINAL:

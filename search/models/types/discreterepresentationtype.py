@@ -1,4 +1,4 @@
-from deephyper.search.models import Type
+from deephyper.search.models.type import Type
 
 class DiscreteRepresentationType(Type):
     """

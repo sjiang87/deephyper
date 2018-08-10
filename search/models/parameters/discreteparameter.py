@@ -12,8 +12,8 @@ class DiscreteParameter(Parameter):
     """
 
     def __init__(self, name, low, high, step_type=StepType.ARITHMETIC,
-                 step_size=1, repr_type=DiscreteRepresentationType.DEFAULT,
-                 is_negative=False):
+                 step_size=1, drt=DiscreteRepresentationType.DEFAULT,
+                 map_negative=False):
         """
         Keyword arguments:
         name -- A string to identify the parameter.
@@ -25,22 +25,24 @@ class DiscreteParameter(Parameter):
                      parameter's interval is traversed, e.g. arithmetic.
         step_size -- The magnitude of each step taken on the parameter's
                     interval.
-        repr_type -- A `DiscreteRepresentationType` that specifies how
+        drt -- A `DiscreteRepresentationType` that specifies how
                      the parameter should be presented to a hyperparameter
                      optimizers.
-        is_negative -- If the values on the discrete interval are negative.
+        map_negative -- If the discrete interval has a geometric step type and
+                        its values should be negative, set this flag and specify
+                        positive values for low, high, and step_size.
         """
         # Implementation note: For geometric parameters with negative intervals,
         # it is easier to invert the interval.
         # E.g. [-8, -4, -2, -1] has step size 0.5, but we prefer to specify
         # the interval as [1, 2, 4, 8] with step size 2 and adding negative
-        # signs where necessary via `is_negative`.
+        # signs where necessary via `map_negative`.
         self.low = low
         self.high = high
         self.step_type = step_type
         self.step_size = step_size
-        self.repr_type = repr_type
-        self.is_negative = is_negative
+        self.drt = drt
+        self.map_negative = map_negative
         super(DiscreteParameter, self).__init__(name, ParameterType.DISCRETE)
 
     # Provide a convenient way to output information about the parameter.
@@ -48,11 +50,12 @@ class DiscreteParameter(Parameter):
         return ("<param n: \'{0}\', t: {1}, low: {2}, high: {3}, step_t: {4}, "
                "step_s: {5}, repr_t: {6}, is_neg: {7}>".format(
                 self.name, self.type, self.low, self.high, self.step_type,
-                self.step_size, self.repr_type, self.is_negative))
+                self.step_size, self.drt, self.map_negative))
 
     def __repr__(self):
         return self.__str__()
 
+    @property
     def interval_list(self):
         """
         Return a list of values that are on the discrete interval
@@ -60,7 +63,7 @@ class DiscreteParameter(Parameter):
         """
         # Unpack values for frequent loop reference.
         high = self.high
-        is_neg = self.is_negative
+        map_neg = self.map_negative
         step_type = self.step_type
         step_size = self.step_size
         values = list()
@@ -70,7 +73,7 @@ class DiscreteParameter(Parameter):
         # the values list.
         while value_cur <= high:
             # Add current value to values.
-            if is_neg:
+            if map_neg:
                 values.append(-value_cur)
             else:
                 values.append(value_cur)
@@ -96,16 +99,17 @@ class DiscreteParameter(Parameter):
         elif self.step_type == StepType.GEOMETRIC:
             abs_val = self.low * (self.step_size ** n)
 
-        if self.is_neg:
+        if self.map_negative:
             return -abs_val
         else:
             return abs_val
 
+    @property
     def max_n(self):
         """
         Return the greatest n, element of the naturals, such that:
-            Arithmetic: lower_bound + (step_size * n) <= upper_bound.
-            Geometric:  lower_bound * (step_size ^ n) <= upper_bound.
+            Arithmetic: low + (step_size * n) <= high.
+            Geometric:  low * (step_size ^ n) <= high.
         i.e. what is the largest value that should be passed to map_to_interval?
         """
         # Unpack and cast parameter values for correct arithmetic.
@@ -122,7 +126,7 @@ class DiscreteParameter(Parameter):
             else:
                 return n
         elif self.step_type == StepType.GEOMETRIC:
-            if lower_bound < 0:
+            if low < 0:
                 n = int(floor(log(low / high, step_size)))
                 # Correct for roundoff error.
                 if(low / (step_size ** n) <= high * step_size):
@@ -148,15 +152,18 @@ class DiscreteParameter(Parameter):
                           "type: {0}".format(self))
 
         # Ensure valid representation type.
-        if not isinstance(self.repr_type, DiscreteRepresentationType):
+        if not isinstance(self.drt, DiscreteRepresentationType):
             raise Warning("Parameter constructed with unrecognized "
                           "representation type: {0}".format(self))
 
         # Ensure the interval has valid lower and upper bounds.
-        if self.low < 0:
+        if (self.low < 0
+                and self.step_type == StepType.GEOMETRIC
+                and not self.map_negative):
             raise Warning("Discrete parameter constructed with negative lower "
-                          "bound. Please make use of the `is_negative` "
-                          "constructor argument. {0}".format(self))
+                          "bound. Please make use of the `map_negative` "
+                          "constructor argument for geometric intervals. "
+                          "{0}".format(self))
 
         if self.low >= self.high:
             raise Warning("Parameter's lower bound exceeds or is equal to "
