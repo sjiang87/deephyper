@@ -6,6 +6,8 @@ import logging
 from importlib import import_module
 from importlib.util import find_spec
 
+from deephyper.search.models.parsers.skoptparser import SKOptParser
+
 masterLogger = None
 
 class Timer:
@@ -32,9 +34,9 @@ class OptConfig:
         package = os.path.basename(os.path.dirname(HERE)) # 'deephyper'
 
         self.backend = args.backend
-        self.max_evals = args.max_evals 
-        self.individuals_per_worker = args.individuals_per_worker 
-        self.ga_num_gen = args.ga_num_gen 
+        self.max_evals = args.max_evals
+        self.individuals_per_worker = args.individuals_per_worker
+        self.ga_num_gen = args.ga_num_gen
         self.evaluator = args.evaluator
         self.repeat_evals = args.repeat_evals
         self.num_workers = args.num_workers
@@ -45,7 +47,7 @@ class OptConfig:
         self.model_path = args.model_path.strip()
         self.data_source = args.data_source.strip()
         self.stage_in_destination = args.stage_in_destination.strip()
-        
+
         # for example, the default value of args.benchmark is "b1.addition_rnn"
         benchmark_directory = args.benchmark.split('.')[0] # "b1"
         self.benchmark = args.benchmark
@@ -55,14 +57,16 @@ class OptConfig:
         # get the path of the b1/addition_rnn.py file here:
         self.benchmark_module_name = f'{package}.benchmarks.{args.benchmark}'
         self.benchmark_filename = find_spec(self.benchmark_module_name).origin
-        
+
         # create a problem instance and configure the skopt.Optimizer
         instance = problem_module.Problem()
         self.params = list(instance.params)
         self.starting_point = instance.starting_point
-        
-        spaceDict = instance.space
-        self.space = [spaceDict[key] for key in self.params]
+
+        # TODO: TENATIVE REPLACEMENT
+        self.space = [SKOptParser.transform_param(param) for param in instance.space]
+        # spaceDict = instance.space
+        # self.space = [spaceDict[key] for key in self.params]
 
 def sk_optimizer_from_config(opt_config, random_state):
     from skopt import Optimizer
@@ -109,7 +113,7 @@ def conf_logger(name):
 
     handler = logging.FileHandler('deephyper.log')
     formatter = logging.Formatter(
-        '%(asctime)s|%(process)d|%(levelname)s|%(name)s:%(lineno)s] %(message)s', 
+        '%(asctime)s|%(process)d|%(levelname)s|%(name)s:%(lineno)s] %(message)s',
         "%Y-%m-%d %H:%M:%S"
     )
     handler.setFormatter(formatter)
@@ -184,7 +188,7 @@ def create_parser():
     parser.add_argument('--amls-lie-strategy', action='store',
                         default="cl_max", choices=["cl_min", "cl_mean", "cl_max"])
 
-    parser.add_argument('--amls-acq-func', action='store', 
+    parser.add_argument('--amls-acq-func', action='store',
                         default="gp_hedge", choices=["LCB", "EI", "PI","gp_hedge"])
 
     parser.add_argument('--from-checkpoint', default=None,
@@ -196,7 +200,7 @@ def create_parser():
                        )
     parser.add_argument('--model_path', help="path from which models are loaded/saved", default='')
     parser.add_argument('--data_source', help="location of dataset to load", default='')
-    parser.add_argument('--stage_in_destination', help="if provided; cache data at this location", 
+    parser.add_argument('--stage_in_destination', help="if provided; cache data at this location",
                         default='')
     parser.add_argument('--eval-timeout-minutes', type=int, default=-1, help="Kill evals that take longer than this")
     return parser
