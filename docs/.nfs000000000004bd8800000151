@@ -1,0 +1,83 @@
+# Run the following shell commands to setup your environment.
+conda create -n dl-hps python=3.6
+conda activate dl-hps
+conda install h5py
+conda install scikit-learn
+conda instal mpi4py
+conda install -c conda-forge keras
+git clone https://github.com/scikit-optimize/scikit-optimize.git
+cd scikit-optimize
+pip install -e .
+conda install cython
+conda install -c conda-forge xgboost
+
+# I added a setup.py file to deephyper so I could pip install it.
+mkdir deephyper
+cd deephyper
+git clone https://xgitlab.cels.anl.gov/pbalapra/deephyper.git
+printf "from distutils.core import setup\nsetup(name="deephyper", version="0.1dev", packages=["deephyper",], license="NONE",long_description="A package for hyperparameter optimization on deep neural nets")" >> setup.py
+pip install -e .
+
+# My `conda list` now looks like this:
+# Name                    Version                   Build  Channel
+absl-py                   0.3.0                      py_0    conda-forge
+astor                     0.7.1                      py_0    conda-forge
+blas                      1.0                         mkl
+ca-certificates           2018.03.07                    0
+certifi                   2018.4.16                py36_0
+cython                    0.28.5           py36hf484d3e_0
+deephyper                 0.1.dev0                  <pip>
+gast                      0.2.0                      py_0    conda-forge
+grpcio                    1.12.1           py36hdbcaa40_0
+h5py                      2.8.0            py36h8d01980_0
+hdf5                      1.10.2               hba1933b_1
+intel-openmp              2018.0.3                      0
+keras                     2.1.6                    py36_0    conda-forge
+libedit                   3.1.20170329         h6b74fdf_2
+libffi                    3.2.1                hd88cf55_4
+libgcc-ng                 7.2.0                hdf63c60_3
+libgfortran-ng            7.2.0                hdf63c60_3
+libgpuarray               0.7.6                h470a237_3    conda-forge
+libprotobuf               3.5.2                hd28b015_1    conda-forge
+libstdcxx-ng              7.2.0                hdf63c60_3
+mako                      1.0.7                      py_1    conda-forge
+markdown                  2.6.11                     py_0    conda-forge
+markupsafe                1.0                      py36_0    conda-forge
+mkl                       2018.0.3                      1
+mkl_fft                   1.0.4            py36h4414c95_1
+mkl_random                1.0.1            py36h4414c95_1
+mpi4py                    2.0.0                    py36_2
+mpich2                    1.4.1p1                       0
+ncurses                   6.1                  hf484d3e_0
+numpy                     1.15.0           py36h1b885b7_0
+numpy-base                1.15.0           py36h3dfced4_0
+openssl                   1.0.2o               h14c3975_1
+pip                       18.0                      <pip>
+pip                       10.0.1                   py36_0
+protobuf                  3.5.2            py36hd28b015_0    conda-forge
+pyaml                     17.12.1                   <pip>
+pygpu                     0.7.6                    py36_0    conda-forge
+python                    3.6.6                hc3d631a_0
+pyyaml                    3.12                     py36_1    conda-forge
+readline                  7.0                  ha6073c6_4
+scikit-learn              0.19.1           py36hedc7406_0
+scikit-optimize           0.5.2+39.g000b9d8.dirty
+<pip>
+scipy                     1.1.0            py36hc49cb51_0
+setuptools                40.0.0                   py36_0
+six                       1.11.0                   py36_1
+sqlite                    3.24.0               h84994c4_0
+tensorboard               1.9.0                    py36_0    conda-forge
+tensorflow                1.9.0                    py36_0    conda-forge
+termcolor                 1.1.0                      py_2    conda-forge
+theano                    1.0.2                    py36_0    conda-forge
+tk                        8.6.7                hc745277_3
+werkzeug                  0.14.1                     py_0    conda-forge
+wheel                     0.31.1                   py36_0
+xgboost                   0.72.1           py36hfc679d8_1    conda-forge
+xz                        5.2.4                h14c3975_4
+yaml                      0.1.7                h470a237_1    conda-forge
+zlib                      1.2.11               ha838bed_2
+
+
+# Running deephyper.

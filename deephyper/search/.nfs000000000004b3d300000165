@@ -1,0 +1,95 @@
+2018-08-10 15:50:26|15255|INFO|deephyper:122] 
+
+Loading Deephyper
+--------------
+2018-08-10 16:27:33|18014|INFO|deephyper:122] 
+
+Loading Deephyper
+--------------
+2018-08-10 16:36:16|19266|INFO|deephyper:122] 
+
+Loading Deephyper
+--------------
+2018-08-10 16:36:35|19287|INFO|deephyper:122] 
+
+Loading Deephyper
+--------------
+2018-08-10 16:37:33|19309|INFO|deephyper:122] 
+
+Loading Deephyper
+--------------
+2018-08-10 16:37:33|19309|INFO|deephyper.search.util:107] Creating skopt.Optimizer with XGB base_estimator
+2018-08-10 16:38:57|19479|INFO|deephyper:122] 
+
+Loading Deephyper
+--------------
+2018-08-10 16:38:57|19479|INFO|deephyper.search.util:107] Creating skopt.Optimizer with XGB base_estimator
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:25] Local Evaluator instantiated
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:26] Backend: tensorflow
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:27] Benchmark: deephyper.benchmarks.b1.addition_rnn
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:34] Created ProcessPool with 10 procs
+2018-08-10 16:38:58|19479|INFO|deephyper.search.amls:149] Starting new run with deephyper.benchmarks.b1.addition_rnn
+2018-08-10 16:38:58|19479|INFO|deephyper.search.amls:165] AMLS-single server driver starting
+2018-08-10 16:38:58|19479|INFO|deephyper.search.amls:166] Generating 10 initial points...
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 93, 'rnn_type': 'LSTM', 'nlayers': 23, 'activation': 'elu', 'batch_size': 128, 'dropout': 0.3373036988441605, 'optimizer': 'adagrad', 'learning_rate': 3.064301251264281, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [93, 'LSTM', 79, 23, 'elu', 128, 0.3373036988441605, 'adagrad', 3.064301251264281]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 248, 'rnn_type': 'LSTM', 'nlayers': 29, 'activation': 'selu', 'batch_size': 512, 'dropout': 0.46396470919685384, 'optimizer': 'adamax', 'learning_rate': 3.7417857609395617, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [248, 'LSTM', 57, 29, 'selu', 512, 0.46396470919685384, 'adamax', 3.7417857609395617]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 194, 'rnn_type': 'LSTM', 'nlayers': 21, 'activation': 'elu', 'batch_size': 64, 'dropout': 0.4953452395803294, 'optimizer': 'adagrad', 'learning_rate': 1.6281779069927242, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [194, 'LSTM', 64, 21, 'elu', 64, 0.4953452395803294, 'adagrad', 1.6281779069927242]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 425, 'rnn_type': 'LSTM', 'nlayers': 8, 'activation': 'tanh', 'batch_size': 128, 'dropout': 0.13703909335957434, 'optimizer': 'adamax', 'learning_rate': 4.188859077820125, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [425, 'LSTM', 92, 8, 'tanh', 128, 0.13703909335957434, 'adamax', 4.188859077820125]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 366, 'rnn_type': 'LSTM', 'nlayers': 3, 'activation': 'tanh', 'batch_size': 32, 'dropout': 0.030591977254476495, 'optimizer': 'adadelta', 'learning_rate': 1.993050778176475, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [366, 'LSTM', 52, 3, 'tanh', 32, 0.030591977254476495, 'adadelta', 1.993050778176475]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 413, 'rnn_type': 'GRU', 'nlayers': 28, 'activation': 'relu', 'batch_size': 32, 'dropout': 0.7309402348036974, 'optimizer': 'rmsprop', 'learning_rate': 4.867935798118819, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [413, 'GRU', 11, 28, 'relu', 32, 0.7309402348036974, 'rmsprop', 4.867935798118819]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 404, 'rnn_type': 'GRU', 'nlayers': 8, 'activation': 'relu', 'batch_size': 1024, 'dropout': 0.33132428837252675, 'optimizer': 'adamax', 'learning_rate': 3.1863893843884266, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [404, 'GRU', 64, 8, 'relu', 1024, 0.33132428837252675, 'adamax', 3.1863893843884266]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 335, 'rnn_type': 'GRU', 'nlayers': 21, 'activation': 'selu', 'batch_size': 8, 'dropout': 0.3891321161650432, 'optimizer': 'adamax', 'learning_rate': 3.3062861134450565, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [335, 'GRU', 67, 21, 'selu', 8, 0.3891321161650432, 'adamax', 3.3062861134450565]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 342, 'rnn_type': 'SimpleRNN', 'nlayers': 10, 'activation': 'elu', 'batch_size': 512, 'dropout': 0.562609593302859, 'optimizer': 'sgd', 'learning_rate': 6.676717008243911, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [342, 'SimpleRNN', 95, 10, 'elu', 512, 0.562609593302859, 'sgd', 6.676717008243911]
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:46] Running: {'epochs': 62, 'rnn_type': 'GRU', 'nlayers': 29, 'activation': 'relu', 'batch_size': 32, 'dropout': 0.9153201203569641, 'optimizer': 'adam', 'learning_rate': 6.343008671777915, 'model_path': '', 'data_source': '', 'stage_in_destination': ''}
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate:53] Submitted eval of [62, 'GRU', 91, 29, 'relu', 32, 0.9153201203569641, 'adam', 6.343008671777915]
+2018-08-10 16:38:58|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:0.00
+2018-08-10 16:38:58|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:00|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:2.00
+2018-08-10 16:39:00|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:02|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:4.00
+2018-08-10 16:39:02|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:04|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:6.00
+2018-08-10 16:39:04|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:06|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:8.00
+2018-08-10 16:39:06|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:08|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:10.00
+2018-08-10 16:39:08|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:10|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:12.00
+2018-08-10 16:39:10|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:12|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:14.00
+2018-08-10 16:39:12|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:14|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:16.00
+2018-08-10 16:39:14|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:16|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:18.00
+2018-08-10 16:39:16|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:18|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:20.00
+2018-08-10 16:39:18|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:20|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:22.00
+2018-08-10 16:39:20|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:22|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:24.00
+2018-08-10 16:39:22|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:24|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:26.00
+2018-08-10 16:39:24|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:26|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:28.00
+2018-08-10 16:39:26|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:28|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:30.00
+2018-08-10 16:39:28|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:30|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:32.00
+2018-08-10 16:39:30|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:32|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:34.00
+2018-08-10 16:39:32|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:34|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:36.00
+2018-08-10 16:39:34|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:36|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:38.00
+2018-08-10 16:39:36|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
+2018-08-10 16:39:38|19479|INFO|deephyper.search.amls:172] Elapsed time: 00:00:40.00
+2018-08-10 16:39:38|19479|INFO|deephyper.evaluators.evaluate_local:82] 0 new evals have completed
