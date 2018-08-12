@@ -12,7 +12,7 @@ tf.set_random_seed(1234)
 sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
 K.set_session(sess)
 
-from hyper2018.benchmarks import util
+from deephyper.benchmarks_hps import util
 timer = util.Timer()
 timer.start("module loading")
 
@@ -25,9 +25,9 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense, Conv2D, BatchNormalization, Activation
 from keras.layers import AveragePooling2D, Input, Flatten
 from keras.callbacks import TerminateOnNaN, ModelCheckpoint, LearningRateScheduler, ReduceLROnPlateau
-from hyper2018.benchmarks.util import TerminateOnTimeOut
+from deephyper.benchmarks_hps.util import TerminateOnTimeOut
 from keras.preprocessing.image import ImageDataGenerator
-from hyper2018.benchmarks.cliparser import build_base_parser
+from deephyper.benchmarks_hps.cliparser import build_base_parser
 from keras.regularizers import l2
 from keras import backend as K
 from keras.models import Model

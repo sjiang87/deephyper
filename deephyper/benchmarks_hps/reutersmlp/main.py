@@ -12,7 +12,7 @@ tf.set_random_seed(1234)
 sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
 K.set_session(sess)
 
-from hyper2018.benchmarks import util
+from deephyper.benchmarks_hps import util
 timer = util.Timer()
 timer.start("module loading")
 
@@ -25,7 +25,7 @@ from keras.layers import Dense, Dropout, Activation
 from keras.datasets import reuters
 from keras.callbacks import TerminateOnNaN, EarlyStopping
 from keras.preprocessing.text import Tokenizer
-from hyper2018.benchmarks.cliparser import build_base_parser
+from deephyper.benchmarks_hps.cliparser import build_base_parser
 
 # Do some path magic.
 here  = os.path.dirname(os.path.abspath(__file__))

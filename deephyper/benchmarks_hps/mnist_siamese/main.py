@@ -15,7 +15,7 @@ tf.set_random_seed(1234)
 sess = tf.Session(graph=tf.get_default_graph(), config=session_conf)
 K.set_session(sess)
 
-from hyper2018.benchmarks import util 
+from deephyper.benchmarks_hps import util 
 
 timer = util.Timer()
 timer.start('module loading')
@@ -27,8 +27,8 @@ from keras.datasets import mnist
 from keras.models import Model
 from keras.layers import Input, Flatten, Dense, Dropout, Lambda
 from keras.optimizers import RMSprop
-from hyper2018.benchmarks.cliparser import build_base_parser
-from hyper2018.benchmarks.util import TerminateOnTimeOut
+from deephyper.benchmarks_hps.cliparser import build_base_parser
+from deephyper.benchmarks_hps.util import TerminateOnTimeOut
 from keras.callbacks import EarlyStopping, TerminateOnNaN
 
 here = os.path.dirname(os.path.abspath(__file__))
