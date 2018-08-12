@@ -1,9 +1,10 @@
-from skopt.space.space import Real, Integer, Categorical, Space
+from skopt.space.space import Categorical, Integer, Real, Space
 from deephyper.search.models.parser import Parser
-from deephyper.search.models.types.steptype import StepType
-from deephyper.search.models.types.priortype import PriorType
+from deephyper.search.models.types.discreterepresentationtype import \
+    DiscreteRepresentationType
 from deephyper.search.models.types.parametertype import ParameterType
-from deephyper.search.models.types.discreterepresentationtype import DiscreteRepresentationType
+from deephyper.search.models.types.priortype import PriorType
+from deephyper.search.models.types.steptype import StepType
 
 class SKOptParser(Parser):
     """

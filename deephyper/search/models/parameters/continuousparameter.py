@@ -22,8 +22,8 @@ class ContinuousParameter(Parameter):
         # span the same effective interval. For instance, Hyperopt implements
         # loguniform with the natural logarithm, SKOpt with the
         # base 10 logarithm.
-        self.low = float(low)
-        self.high = float(high)
+        self.low = low
+        self.high = high
         self.prior = prior
         super(ContinuousParameter, self).__init__(name,
                                                   ParameterType.CONTINUOUS)

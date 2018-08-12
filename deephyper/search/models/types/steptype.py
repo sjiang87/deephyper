@@ -6,4 +6,4 @@ class StepType(Type):
     for discrete values.
     """
     ARITHMETIC = 1
-    GEOMETRIC  = 2
+    GEOMETRIC = 2

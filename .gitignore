@@ -4,9 +4,6 @@
 .AppleDouble
 .LSOverride
 
-# File system.
-*.nfs*
-
 # Icon must end with two \r
 Icon
 
@@ -43,3 +40,5 @@ keras-gcn-master
 scripts/runs/
 scripts/runjob.conf
 scripts/runjob.conf.cooley
+*.nfs*
+*.vscode

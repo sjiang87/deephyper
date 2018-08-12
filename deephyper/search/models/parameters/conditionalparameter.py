@@ -40,7 +40,7 @@ class ConditionalParameter(Parameter):
         # Check that branches is a dictionary.
         if not isinstance(self.branches, dict):
             raise Exception("Branches attribute of a conditional parameter "
-                            "must be a dictionary: {0}".fromat(self))
+                            "must be a dictionary: {0}".format(self))
 
         # Check validity of branches object.
         # Note that it is not possible to have duplicate keys in a python
