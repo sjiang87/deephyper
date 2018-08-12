@@ -48,7 +48,11 @@ def run(param_dict=None, verbose=2):
 
     # Get values from param_dict.
     # Hyperparameters
-    ACTIVATION        = util.get_activation_instance(param_dict)
+    ACTIVATION1       = util.get_activation_instance(param_dict['activation1'], param_dict['alpha1'])
+    ACTIVATION2       = util.get_activation_instance(param_dict['activation2'], param_dict['alpha2'])
+    ACTIVATION3       = util.get_activation_instance(param_dict['activation3'], param_dict['alpha3'])
+    ACTIVATION4       = util.get_activation_instance(param_dict['activation4'], param_dict['alpha4'])
+    ACTIVATION5       = util.get_activation_instance(param_dict['activation5'], param_dict['alpha5'])
     BATCH_SIZE        = param_dict["batch_size"]
     DATA_AUGMENTATION = param_dict["data_augmentation"]
     DROPOUT           = param_dict["dropout"]
@@ -115,13 +119,13 @@ def run(param_dict=None, verbose=2):
         model = Sequential()
 
         model.add(Conv2D(F1_UNITS, (F1_SIZE, F1_SIZE), strides = (STRIDE1, STRIDE1), padding=PADDING_C1,
-                        input_shape=x_train.shape[1:], activation=ACTIVATION))
-        model.add(Conv2D(F1_UNITS, (F1_SIZE, F1_SIZE), strides = (STRIDE1, STRIDE1), padding=PADDING_C1, activation=ACTIVATION))
+                        input_shape=x_train.shape[1:], activation=ACTIVATION1))
+        model.add(Conv2D(F1_UNITS, (F1_SIZE, F1_SIZE), strides = (STRIDE1, STRIDE1), padding=PADDING_C1, activation=ACTIVATION2))
         model.add(MaxPooling2D(pool_size=(P_SIZE, P_SIZE), padding=PADDING_P1))
         model.add(Dropout(DROPOUT))
 
-        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), strides = (STRIDE2, STRIDE2), padding=PADDING_C2, activation=ACTIVATION))
-        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), strides = (STRIDE2, STRIDE2), padding=PADDING_C2, activation=ACTIVATION))
+        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), strides = (STRIDE2, STRIDE2), padding=PADDING_C2, activation=ACTIVATION3))
+        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), strides = (STRIDE2, STRIDE2), padding=PADDING_C2, activation=ACTIVATION4))
         if verbose:
             model.summary()
         model.add(MaxPooling2D(pool_size=(P_SIZE, P_SIZE), padding=PADDING_P2))
@@ -130,7 +134,7 @@ def run(param_dict=None, verbose=2):
             model.summary()
 
         model.add(Flatten())
-        model.add(Dense(NUNITS, activation=ACTIVATION))
+        model.add(Dense(NUNITS, activation=ACTIVATION5))
         model.add(Dropout(DROPOUT))
         model.add(Dense(num_classes, activation="softmax"))
         if verbose:

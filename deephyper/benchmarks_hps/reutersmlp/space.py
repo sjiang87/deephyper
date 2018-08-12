@@ -1,6 +1,7 @@
 from collections import OrderedDict
-from deephyper.benchmarks_hps.params import optimizer, dropout, activation
 from deephyper.search.models.base import param, step
+from deephyper.benchmarks_hps.params import optimizer, dropout, activation
+
 class Problem():
     def __init__(self):
         self.space = [

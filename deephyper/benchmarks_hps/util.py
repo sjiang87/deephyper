@@ -11,7 +11,7 @@ from collections import namedtuple
 from keras.callbacks import Callback
 from keras.optimizers import SGD, RMSprop, Adagrad, Adadelta, Adam, Adamax, Nadam
 from keras.activations import softmax, elu, relu, softplus, softsign, selu, tanh, sigmoid, hard_sigmoid, linear
-from hyper2018.api.util.compatability import items
+from deephyper.benchmarks_hps.compatability import items
 
 def handle_cli(initial_param_dict, parser):
     """Handle CLI and param_dict cleanup for the benchmarks' main functions."""
@@ -102,21 +102,22 @@ def get_optimizer_instance(param_dict):
 
     return optimizer
 
-def get_activation_instance(param_dict):
+def get_activation_instance(activation_str, alpha=None):
     """Construct the appropriate activation function from the param_dict
     and return `None` if an activation function instance is unable to be instantiated."""
 
-    activation_str = param_dict["activation"]
-    alpha          = param_dict["alpha"]
-
     if activation_str == "elu":
-        activation = lambda x: elu(x, alpha=alpha)
+        if alpha is None:
+            alpha = 1.0
+        activation = lambda x: elu(x, alpha)
     elif activation_str == "softplus":
         activation = softplus
     elif activation_str == "softsign":
         activation = softsign
     elif activation_str == "relu":
-        activation = lambda x: relu(x, alpha=alpha)
+        if alpha is None:
+            alpha = 0.0
+        activation = lambda x: relu(x, alpha)
     elif activation_str == "tanh":
         activation = tanh
     elif activation_str == "sigmoid":

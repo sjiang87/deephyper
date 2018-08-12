@@ -47,7 +47,7 @@ def run(param_dict=None, verbose=2):
 
     # Get values from param_dict.
     # Hyperparameters
-    ACTIVATION    = util.get_activation_instance(param_dict)
+    ACTIVATION    = util.get_activation_instance(param_dict["activation"], param_dict["alpha"])
     BATCH_SIZE    = param_dict["batch_size"]
     DROPOUT       = param_dict["dropout"]
     EPOCHS        = param_dict["epochs"]
