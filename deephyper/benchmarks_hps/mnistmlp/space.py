@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from deephyper.benchmarks_hps.params import optimizer, dropout, activation
+from deephyper.benchmarks_hps.params import optimizer, dropout, activation, activation1, activation2
 from deephyper.search.models.base import param, step
 class Problem():
     def __init__(self):
@@ -9,6 +9,8 @@ class Problem():
                 param.discrete('nhidden', 1, 20, step.ARITHMETIC, 1),
                 param.discrete('nunits', 1, 1000, step.ARITHMETIC, 1),
                 activation,
+                activation1,
+                activation2,
                 dropout,
                 optimizer
         ]

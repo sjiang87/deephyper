@@ -66,7 +66,9 @@ def run(param_dict=None, verbose=2):
     BATCH_SIZE = param_dict['batch_size']
     EPOCHS = param_dict['epochs']
     DROPOUT = param_dict['dropout']
-    ACTIVATION = util.get_activation_instance(param_dict)
+    ACTIVATION = util.get_activation_instance(param_dict['activation'], param_dict['alpha'])
+    ACTIVATION1 = util.get_activation_instance(param_dict['activation1'], param_dict['alpha1'])
+    ACTIVATION2 = util.get_activation_instance(param_dict['activation2'], param_dict['alpha2'])
     NHIDDEN = param_dict['nhidden']
     NUNITS = param_dict['nunits']
     OPTIMIZER      = util.get_optimizer_instance(param_dict)
@@ -115,7 +117,9 @@ def run(param_dict=None, verbose=2):
     model.add(Dense(NUNITS, activation=ACTIVATION, input_shape=(784,)))
     model.add(Dropout(DROPOUT))
     for i in range(NHIDDEN):
-        model.add(Dense(NUNITS, activation=ACTIVATION))
+        model.add(Dense(NUNITS, activation=ACTIVATION1))
+        model.add(Dropout(DROPOUT))
+        model.add(Dense(NUNITS, activation=ACTIVATION2))
         model.add(Dropout(DROPOUT))
     model.add(Dense(num_classes, activation='softmax'))
     model.summary()

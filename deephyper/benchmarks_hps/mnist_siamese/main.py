@@ -100,11 +100,11 @@ def run(param_dict=None, verbose=2):
         '''
         input = Input(shape=input_shape)
         x = Flatten()(input)
-        x = Dense(UNITS, activation=ACTIVATION)(x)
+        x = Dense(UNITS, activation=ACTIVATION1)(x)
         x = Dropout(DROPOUT)(x)
-        x = Dense(UNITS, activation=ACTIVATION)(x)
+        x = Dense(UNITS, activation=ACTIVATION2)(x)
         x = Dropout(DROPOUT)(x)
-        x = Dense(UNITS, activation=ACTIVATION)(x)
+        x = Dense(UNITS, activation=ACTIVATION3)(x)
         return Model(input, x)
 
 
@@ -129,7 +129,9 @@ def run(param_dict=None, verbose=2):
     BATCH_SIZE      = param_dict['batch_size']
     EPOCHS          = param_dict['epochs']
     DROPOUT         = param_dict['dropout']
-    ACTIVATION      = util.get_activation_instance(param_dict)
+    ACTIVATION1      = util.get_activation_instance(param_dict['activation1'], param_dict['alpha1'])
+    ACTIVATION2      = util.get_activation_instance(param_dict['activation2'], param_dict['alpha2'])
+    ACTIVATION3      = util.get_activation_instance(param_dict['activation3'], param_dict['alpha3'])
     UNITS           = param_dict['units']
     OPTIMIZER       = util.get_optimizer_instance(param_dict)
     patience  = math.ceil(EPOCHS/2)

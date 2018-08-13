@@ -1,10 +1,11 @@
 from collections import OrderedDict
-from deephyper.benchmarks_hps.params import optimizer, dropout, activation, padding
+from deephyper.benchmarks_hps.params import optimizer, dropout, activation1, activation2, padding
 from deephyper.search.models.base import param, step
 class Problem():
     def __init__(self):
         self.space = [
-            activation,
+            activation1,
+            activation2,
             param.discrete("batch_size", 8, 1024, step.GEOMETRIC, 2),
             dropout,
             param.discrete("embedding_dims", 40, 60, step.ARITHMETIC, 1),

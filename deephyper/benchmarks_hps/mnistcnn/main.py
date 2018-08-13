@@ -49,7 +49,11 @@ def run(param_dict=None, verbose=2):
 
     # Get values from param_dict.
     # Hyperparameters
-    ACTIVATION    = util.get_activation_instance(param_dict)
+    ACTIVATION1    = util.get_activation_instance(param_dict['activation1'], param_dict['alpha1'])
+    ACTIVATION2    = util.get_activation_instance(param_dict['activation2'], param_dict['alpha2'])
+    ACTIVATION3    = util.get_activation_instance(param_dict['activation3'], param_dict['alpha3'])
+    ACTIVATION4    = util.get_activation_instance(param_dict['activation4'], param_dict['alpha4'])
+    ACTIVATION5    = util.get_activation_instance(param_dict['activation5'], param_dict['alpha5'])
     BATCH_SIZE    = param_dict["batch_size"]
     DROPOUT       = param_dict["dropout"]
     EPOCHS        = param_dict["epochs"]
@@ -130,18 +134,18 @@ def run(param_dict=None, verbose=2):
     if not model:
         model = Sequential()
         model.add(Conv2D(F1_UNITS, (F1_SIZE, F1_SIZE), padding=PADDING_C1,
-                        input_shape=input_shape, activation=ACTIVATION))
-        model.add(Conv2D(F1_UNITS, (F1_SIZE, F1_SIZE), padding=PADDING_C1, activation=ACTIVATION))
+                        input_shape=input_shape, activation=ACTIVATION1))
+        model.add(Conv2D(F1_UNITS, (F1_SIZE, F1_SIZE), padding=PADDING_C1, activation=ACTIVATION2))
         if MAX_POOL:
             model.add(MaxPooling2D(pool_size=(P_SIZE, P_SIZE), padding=PADDING_P1))
         model.add(Dropout(DROPOUT))
-        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), padding=PADDING_C2, activation=ACTIVATION))
-        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), padding=PADDING_C2, activation=ACTIVATION))
+        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), padding=PADDING_C2, activation=ACTIVATION3))
+        model.add(Conv2D(F2_UNITS, (F2_SIZE, F2_SIZE), padding=PADDING_C2, activation=ACTIVATION4))
         if MAX_POOL:
             model.add(MaxPooling2D(pool_size=(P_SIZE, P_SIZE), padding=PADDING_P2))
         model.add(Dropout(DROPOUT))
         model.add(Flatten())
-        model.add(Dense(NUNITS, activation=ACTIVATION))
+        model.add(Dense(NUNITS, activation=ACTIVATION5))
         model.add(Dropout(DROPOUT))
         model.add(Dense(num_classes, activation="softmax"))
         model.compile(loss="categorical_crossentropy", optimizer=OPTIMIZER, metrics=["accuracy"])

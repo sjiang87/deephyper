@@ -47,11 +47,16 @@ def run(param_dict=None, verbose=2):
 
     # Get values from param_dict.
     # Hyperparameters
-    ACTIVATION    = util.get_activation_instance(param_dict["activation"], param_dict["alpha"])
+    ACTIVATION1    = util.get_activation_instance(param_dict["activation1"], param_dict["alpha1"])
+    ACTIVATION2    = util.get_activation_instance(param_dict["activation2"], param_dict["alpha2"])
+    ACTIVATION3    = util.get_activation_instance(param_dict["activation3"], param_dict["alpha3"])
+    ACTIVATION4    = util.get_activation_instance(param_dict["activation4"], param_dict["alpha4"])
+    ACTIVATION5    = util.get_activation_instance(param_dict["activation5"], param_dict["alpha5"])
     BATCH_SIZE    = param_dict["batch_size"]
     DROPOUT       = param_dict["dropout"]
     EPOCHS        = param_dict["epochs"]
     MAX_WORDS     = param_dict["max_words"]
+    NHIDDEN       = param_dict['nhidden']
     NUNITS        = param_dict["nunits"]
     OPTIMIZER     = util.get_optimizer_instance(param_dict)
     SKIP_TOP      = param_dict["skip_top"]
@@ -117,8 +122,20 @@ def run(param_dict=None, verbose=2):
         if verbose == 1:
             print("Building model...")
         model = Sequential()
-        model.add(Dense(NUNITS, input_shape=(MAX_WORDS,), activation=ACTIVATION))
+        model.add(Dense(NUNITS, input_shape=(MAX_WORDS,), activation=ACTIVATION1))
         model.add(Dropout(DROPOUT))
+        if NHIDDEN >= 2:
+            model.add(Dense(NUNITS, input_shape=(MAX_WORDS,), activation=ACTIVATION2))
+            model.add(Dropout(DROPOUT))
+        if NHIDDEN >= 3:
+            model.add(Dense(NUNITS, input_shape=(MAX_WORDS,), activation=ACTIVATION3))
+            model.add(Dropout(DROPOUT))
+        if NHIDDEN >= 4:
+            model.add(Dense(NUNITS, input_shape=(MAX_WORDS,), activation=ACTIVATION4))
+            model.add(Dropout(DROPOUT))
+        if NHIDDEN >= 5:
+            model.add(Dense(NUNITS, input_shape=(MAX_WORDS,), activation=ACTIVATION5))
+            model.add(Dropout(DROPOUT))
         model.add(Dense(num_classes, activation="softmax"))
         model.compile(loss="categorical_crossentropy",
                     optimizer=OPTIMIZER,

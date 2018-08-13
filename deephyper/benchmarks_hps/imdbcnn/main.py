@@ -57,7 +57,8 @@ def run(param_dict=None, verbose=2):
 
     # Get arguments from param_dict.
     # Hyperparameters
-    ACTIVATION     = util.get_activation_instance(param_dict)
+    ACTIVATION1     = util.get_activation_instance(param_dict['activation1'], param_dict['alpha1'])
+    ACTIVATION2     = util.get_activation_instance(param_dict['activation2'], param_dict['alpha2'])
     BATCH_SIZE     = param_dict["batch_size"]
     DROPOUT        = param_dict["dropout"]
     EMBEDDING_DIMS = param_dict["embedding_dims"]
@@ -127,7 +128,7 @@ def run(param_dict=None, verbose=2):
         model.add(Conv1D(FILTERS,
                         KERNEL_SIZE,
                         padding=PADDING,
-                        activation=ACTIVATION,
+                        activation=ACTIVATION1,
                         strides=STRIDES))
         # we use max pooling:
         model.add(GlobalMaxPooling1D())
@@ -135,7 +136,7 @@ def run(param_dict=None, verbose=2):
         # We add a vanilla hidden layer:
         model.add(Dense(HIDDEN_DIMS))
         model.add(Dropout(DROPOUT))
-        model.add(Activation(ACTIVATION))
+        model.add(Activation(ACTIVATION2))
 
         # We project onto a single unit output layer, and squash it with a sigmoid:
         model.add(Dense(1, activation="sigmoid"))
