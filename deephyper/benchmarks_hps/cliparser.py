@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from hyper2018.benchmarks.util import str2bool
+from deephyper.benchmarks_hps.util import str2bool
 
 def build_base_parser():
     """A command line parser for keras."""

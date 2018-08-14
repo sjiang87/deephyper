@@ -1,17 +1,26 @@
-from deephyper.search.models.types.parametertype import ParameterType
+from deephyper.models.types.parametertype import ParameterType
 
 class Parameter(object):
-    """A class to represent a hyperparmeter."""
+    """
+    A class to represent a hyperparmeter.
 
-    def __init__(self, name, parameter_type):
+    Attributes:
+    name (str) -- A string that identifies the parameter.
+    parameter_type (ParameterType) -- Specifies the type of the parameter.
+    start (any) -- The starting point for evaluation on this hyperparameter.
+    """
+
+    def __init__(self, name, parameter_type, start):
         """
         Keyword arguments:
-        name -- A string that identifies the parameter.
-        parameter_type -- A `ParameterType` value.
+        name (str) -- See class attributes.
+        parameter_type (ParameterType) -- See class attributes.
+        start (any) -- See class attributes.
         """
         super(Parameter, self).__init__()
         self.name = name
         self.type = parameter_type
+        self.start = start
         self.debug()
 
         return

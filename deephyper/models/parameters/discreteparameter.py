@@ -1,9 +1,12 @@
 from math import log, floor
 
-from deephyper.search.models.parameter import Parameter
-from deephyper.search.models.types.steptype import StepType
-from deephyper.search.models.types.parametertype import ParameterType
-from deephyper.search.models.types.discreterepresentationtype import DiscreteRepresentationType
+from deephyper.models.parameter import Parameter
+from deephyper.models.types.discreterepresentationtype import \
+    DiscreteRepresentationType
+from deephyper.models.types.parametertype import ParameterType
+from deephyper.models.types.steptype import StepType
+
+
 
 class DiscreteParameter(Parameter):
     """
@@ -13,24 +16,27 @@ class DiscreteParameter(Parameter):
 
     def __init__(self, name, low, high, step_type=StepType.ARITHMETIC,
                  step_size=1, drt=DiscreteRepresentationType.DEFAULT,
-                 map_negative=False):
+                 map_negative=False, start=None):
         """
         Keyword arguments:
-        name -- A string to identify the parameter.
-        low -- The lower bound of the interval on which the parameter
-               takes values (inclusive).
-        high -- The upper bound of the interval on which the parameter
-                takes values (inclusive).
-        step_type -- A `StepType` that specifies the way in which the
-                     parameter's interval is traversed, e.g. arithmetic.
-        step_size -- The magnitude of each step taken on the parameter's
-                    interval.
-        drt -- A `DiscreteRepresentationType` that specifies how
-                     the parameter should be presented to a hyperparameter
-                     optimizers.
-        map_negative -- If the discrete interval has a geometric step type and
-                        its values should be negative, set this flag and specify
-                        positive values for low, high, and step_size.
+        name (str) -- A string to identify the parameter.
+        low (numeric) -- The lower bound of the interval on which the parameter
+                         takes values (inclusive).
+        high (numeric) -- The upper bound of the interval on which the parameter
+                          takes values (inclusive).
+        step_type (StepType) -- Specifies the way in which the parameter's
+                                interval is traversed, e.g. arithmetic.
+        step_size (numeric) -- The magnitude of each step taken on the
+                               parameter's interval.
+        drt (DiscreteRepresentationType)-- Specifies how the parameter should
+                                           be presented to a hyperparameter
+                                           optimizer.
+        map_negative (bool) -- If the discrete interval has a geometric step
+                               type and its values should be negative, set this
+                               flag and specify positive values for low, high,
+                               and step_size.
+        start (any) -- The starting point for evaluation on this hyperparameter.
+                         Defaults to 'low' if not specified.
         """
         # Implementation note: For geometric parameters with negative intervals,
         # it is easier to invert the interval.
@@ -43,12 +49,15 @@ class DiscreteParameter(Parameter):
         self.step_size = step_size
         self.drt = drt
         self.map_negative = map_negative
-        super(DiscreteParameter, self).__init__(name, ParameterType.DISCRETE)
+        if start is None:
+            start = low
+        super(DiscreteParameter, self).__init__(name, ParameterType.DISCRETE,
+                                                start)
 
     # Provide a convenient way to output information about the parameter.
     def __str__(self):
         return ("<param n: \'{0}\', t: {1}, low: {2}, high: {3}, step_t: {4}, "
-               "step_s: {5}, repr_t: {6}, is_neg: {7}>".format(
+                "step_s: {5}, drt: {6}, is_neg: {7}>".format(
                 self.name, self.type, self.low, self.high, self.step_type,
                 self.step_size, self.drt, self.map_negative))
 
@@ -148,22 +157,22 @@ class DiscreteParameter(Parameter):
 
         # Ensure valid step type.
         if not isinstance(self.step_type, StepType):
-            raise Warning("Parameter constructed with unrecognized step "
-                          "type: {0}".format(self))
+            raise Exception("Parameter constructed with unrecognized step "
+                            "type: {0}".format(self))
 
         # Ensure valid representation type.
         if not isinstance(self.drt, DiscreteRepresentationType):
-            raise Warning("Parameter constructed with unrecognized "
-                          "representation type: {0}".format(self))
+            raise Exception("Parameter constructed with unrecognized "
+                            "representation type: {0}".format(self))
 
         # Ensure the interval has valid lower and upper bounds.
         if (self.low < 0
                 and self.step_type == StepType.GEOMETRIC
                 and not self.map_negative):
-            raise Warning("Discrete parameter constructed with negative lower "
-                          "bound. Please make use of the `map_negative` "
-                          "constructor argument for geometric intervals. "
-                          "{0}".format(self))
+            raise Exception("Discrete parameter constructed with negative lower "
+                            "bound. Please make use of the `map_negative` "
+                            "constructor argument for geometric intervals. "
+                            "{0}".format(self))
 
         if self.low >= self.high:
             raise Warning("Parameter's lower bound exceeds or is equal to "
@@ -176,8 +185,8 @@ class DiscreteParameter(Parameter):
 
         if (self.step_type == StepType.GEOMETRIC
                 and self.step_size <= 1):
-            raise Warning("Parameter has geometric step type and step size <= "
-                          "1: {0}".format(self))
+            raise Exception("Parameter has geometric step type and step size "
+                            "less than or equal to 1: {0}".format(self))
 
         # Check for miscellaneous inconsistencies.
         # Ensure the upper and lower bounds of a discrete, geometric parameter

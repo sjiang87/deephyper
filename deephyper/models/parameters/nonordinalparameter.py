@@ -1,5 +1,5 @@
-from deephyper.search.models.parameter import Parameter
-from deephyper.search.models.types.parametertype import ParameterType
+from deephyper.models.parameter import Parameter
+from deephyper.models.types.parametertype import ParameterType
 
 class NonOrdinalParameter(Parameter):
     """
@@ -7,22 +7,28 @@ class NonOrdinalParameter(Parameter):
     ordering is defined.
     """
 
-    def __init__(self, name, values):
+    def __init__(self, name, values, start=None):
         """
         Keyword arguments:
-        name -- A string to identify the parameter.
-        values -- A list of values that the parameter takes.
+        name (str) -- A string to identify the parameter.
+        values (list) -- A list of values that the parameter takes.
+        start (any) -- The starting point for evaluation on this hyperparameter.
+                         Defaults to the first value in 'values' if none is
+                         specified.
         """
         self.values = values
+        if start is None:
+            start = values[0]
         super(NonOrdinalParameter, self).__init__(name,
-                                                  ParameterType.NON_ORDINAL)
+                                                  ParameterType.NON_ORDINAL,
+                                                  start)
 
         return
 
     # Provide a convenient way to display information about the parameter.
     def __str__(self):
-        return ("<param n: \'%s\', t: %s, vals: %s"
-                % self.name, self.type, self.values)
+        return ("<param n: \'{0}\', t: {1}, vals: {2}".format(
+                self.name, self.type, self.values))
 
     def __repr__(self):
         return self.__str__()
@@ -37,6 +43,6 @@ class NonOrdinalParameter(Parameter):
             raise Warning("Parameter of non-ordinal type has values attribute"
                           "that is not a list type. For maximum compliance"
                           "with hyperparameter optimizers, please specify"
-                          "non-ordinal values in a list. %s" % self)
+                          "non-ordinal values in a list. {0}".format(self))
 
         return

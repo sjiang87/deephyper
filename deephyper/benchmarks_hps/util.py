@@ -11,7 +11,6 @@ from collections import namedtuple
 from keras.callbacks import Callback
 from keras.optimizers import SGD, RMSprop, Adagrad, Adadelta, Adam, Adamax, Nadam
 from keras.activations import softmax, elu, relu, softplus, softsign, selu, tanh, sigmoid, hard_sigmoid, linear
-from deephyper.benchmarks_hps.compatability import items
 
 def handle_cli(initial_param_dict, parser):
     """Handle CLI and param_dict cleanup for the benchmarks' main functions."""
@@ -55,7 +54,7 @@ def fill_missing_defaults(_dict, parser):
 def match_parser_types(_dict, parser):
     """Given a dictionary, cast all its values to the default types of the default values in the argument parser."""
     default_dict = vars(parser.parse_args(""))
-    for key, default_value in items(default_dict):
+    for key, default_value in default_dict.items():
         if key in _dict:
             value        = _dict[key]
             value_type   = type(value)
