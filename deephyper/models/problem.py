@@ -22,3 +22,9 @@ class _Problem(object):
         self.starting_point = starting_point
 
         return
+
+    def __str__(self):
+        """Display parameter names and starting point."""
+
+        return "{0}\n{1}".format(super(_Problem, self).__str__(),
+                                 list(zip(self.params, self.starting_point)))

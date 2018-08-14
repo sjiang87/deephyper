@@ -15,16 +15,16 @@ shuffle = param.non_ordinal("shuffle", [True, False, "batch"])
 stride = param.discrete("stride", 1, 6, step.ARITHMETIC, 1)
 
 # Optimizer hyperparameters
-amsgrad = param.non_ordinal("amsgrad", [True, False], start=False)
-beta_1 = param.continuous("beta_1", 0, 1 - 1e-06, start=0.9)
-beta_2 = param.continuous("beta_2", 0, 1 - 1e-08, start=0.999)
-decay = param.continuous("decay", 0, 1, start=0)
-epsilon = param.continuous("epsilon", 1e-20, 1, start=1e-20)
-learning_rate = param.continuous("learning_rate", 0, 1, start=0.01)
-learning_rate_adadelta = param.continuous("learning_rate", 0, 10, start=1)
-momentum = param.continuous("momentum", 0, 1, start=0)
-nesterov = param.non_ordinal("nesterov", [True, False], start=False)
-rho = param.continuous("rho", 0, 1, start=0.9)
+amsgrad = param.non_ordinal("amsgrad", [True, False])
+beta_1 = param.continuous("beta_1", 0, 1 - 1e-06)
+beta_2 = param.continuous("beta_2", 0, 1 - 1e-08)
+decay = param.continuous("decay", 0, 1)
+epsilon = param.continuous("epsilon", 1e-20, 1)
+learning_rate = param.continuous("learning_rate", 0, 1)
+learning_rate_adadelta = param.continuous("learning_rate", 0, 10)
+momentum = param.continuous("momentum", 0, 1)
+nesterov = param.non_ordinal("nesterov", [True, False])
+rho = param.continuous("rho", 0, 1)
 
 optimizer = param.conditional("optimizer", {
     "sgd": [learning_rate, momentum, decay, nesterov],
@@ -39,7 +39,7 @@ optimizer = param.conditional("optimizer", {
 })
 
 # Activation function hyperparameters
-alpha = param.continuous("alpha", 0, 1, start=0)
+alpha = param.continuous("alpha", 0, 1)
 
 activation = param.conditional("activation", {
     "elu": [alpha],
@@ -57,12 +57,11 @@ activation = param.conditional("activation", {
 
 # Flat versions of conditional parameters.
 optimizer_flat = param.non_ordinal("optimizer",
-    ["sgd", "rmsprop", "adagrad", "adadelta", "adam", "adamax", "nadam"],
-    start="sgd")
+    ["sgd", "rmsprop", "adagrad", "adadelta", "adam", "adamax", "nadam"])
 optimizer_flat_params = [optimizer_flat, amsgrad, beta_1, beta_2, decay,
     epsilon, learning_rate, momentum, nesterov, rho]
 
 activation_flat = param.non_ordinal("activation",
     ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
-     "hard_sigmoid", "linear"], start="relu")
+     "hard_sigmoid", "linear"])
 activation_flat_params = [activation_flat, alpha]
