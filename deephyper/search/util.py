@@ -6,7 +6,7 @@ import logging
 from importlib import import_module
 from importlib.util import find_spec
 
-from deephyper.search.models.parsers.skoptparser import SKOptParser
+from deephyper.models.base import SKOptParser
 
 masterLogger = None
 

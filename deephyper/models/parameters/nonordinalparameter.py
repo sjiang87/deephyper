@@ -1,5 +1,5 @@
-from deephyper.search.models.parameter import Parameter
-from deephyper.search.models.types.parametertype import ParameterType
+from deephyper.models.parameter import Parameter
+from deephyper.models.types.parametertype import ParameterType
 
 class NonOrdinalParameter(Parameter):
     """
@@ -7,15 +7,21 @@ class NonOrdinalParameter(Parameter):
     ordering is defined.
     """
 
-    def __init__(self, name, values):
+    def __init__(self, name, values, start=None):
         """
         Keyword arguments:
         name (str) -- A string to identify the parameter.
         values (list) -- A list of values that the parameter takes.
+        start (any) -- The starting point for evaluation on this hyperparameter.
+                         Defaults to the first value in 'values' if none is
+                         specified.
         """
         self.values = values
+        if start is None:
+            start = values[0]
         super(NonOrdinalParameter, self).__init__(name,
-                                                  ParameterType.NON_ORDINAL)
+                                                  ParameterType.NON_ORDINAL,
+                                                  start)
 
         return
 

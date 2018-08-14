@@ -1,4 +1,4 @@
-from deephyper.search.models.type import Type
+from deephyper.models.type import Type
 
 class StepType(Type):
     """

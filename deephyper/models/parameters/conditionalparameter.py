@@ -1,9 +1,7 @@
 from collections import OrderedDict
 
-from deephyper.search.models.parameter import Parameter
-from deephyper.search.models.types.parametertype import ParameterType
-from deephyper.search.util.compatability import items
-
+from deephyper.models.parameter import Parameter
+from deephyper.models.types.parametertype import ParameterType
 
 class ConditionalParameter(Parameter):
     """A class to describe a hyperparameter that exposes other
@@ -11,17 +9,23 @@ class ConditionalParameter(Parameter):
     as non-ordinal.
     """
 
-    def __init__(self, name, branches):
+    def __init__(self, name, branches, start=None):
         """
         Keyword arguments:
         name (str) -- A string to identify the parameter.
         branches (dict) -- A dictionary where keys are values taken on by this
                            parameter, and values are lists of parameter objects
                            exposed when that value is taken on.
+        start (any) -- The starting point for evaluation on this
+                         hyperparameter. Defaults to the first key in `branches`
+                         if none is specified.
         """
         self.branches = branches
+        if start is None:
+            start = list(branches.keys())[0]
         super(ConditionalParameter, self).__init__(name,
-                                                   ParameterType.CONDITIONAL)
+                                                   ParameterType.CONDITIONAL,
+                                                   start)
         # Make branches an OrderedDict for convenience.
         self.branches = OrderedDict(branches)
 
@@ -49,7 +53,7 @@ class ConditionalParameter(Parameter):
         # dictionary because python will only accept one of the keys attempted
         # to be inserted. Therefore, conditional parameters should be constructed
         # with distinct branch keys in the branches dictionary, per depth level.
-        for branch_name, param_list in items(self.branches):
+        for branch_name, param_list in self.branches.items():
             # Ensure that each branch exposes a list.
             if not isinstance(param_list, list):
                 raise Exception("Branches attribute of a conditional parameter "

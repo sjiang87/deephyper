@@ -1,6 +1,6 @@
-from deephyper.search.models.parameter import Parameter
-from deephyper.search.models.types.parametertype import ParameterType
-from deephyper.search.models.types.priortype import PriorType
+from deephyper.models.parameter import Parameter
+from deephyper.models.types.parametertype import ParameterType
+from deephyper.models.types.priortype import PriorType
 
 class ContinuousParameter(Parameter):
     """
@@ -8,7 +8,7 @@ class ContinuousParameter(Parameter):
     on a numerical interval.
     """
 
-    def __init__(self, name, low, high, prior=PriorType.UNIFORM):
+    def __init__(self, name, low, high, prior=PriorType.UNIFORM, start=None):
         """
         Keyword arguments:
         name (str) -- A string to identify the parameter.
@@ -18,6 +18,8 @@ class ContinuousParameter(Parameter):
                           (inclusive).
         prior (PriorType) -- Determines how samples from the interval are
                              distributed.
+        start (any) -- The starting point for evaluation on this hyperparameter.
+                         Defaults to 'low' if not specified.
         """
         # Implementation note: Optimizers may implement the same priors
         # differently. We choose to not internally ensure that distributions
@@ -27,8 +29,11 @@ class ContinuousParameter(Parameter):
         self.low = low
         self.high = high
         self.prior = prior
+        if start is None:
+            start = low
         super(ContinuousParameter, self).__init__(name,
-                                                  ParameterType.CONTINUOUS)
+                                                  ParameterType.CONTINUOUS,
+                                                  start)
 
         return
 

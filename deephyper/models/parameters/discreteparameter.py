@@ -1,10 +1,10 @@
 from math import log, floor
 
-from deephyper.search.models.parameter import Parameter
-from deephyper.search.models.types.discreterepresentationtype import \
+from deephyper.models.parameter import Parameter
+from deephyper.models.types.discreterepresentationtype import \
     DiscreteRepresentationType
-from deephyper.search.models.types.parametertype import ParameterType
-from deephyper.search.models.types.steptype import StepType
+from deephyper.models.types.parametertype import ParameterType
+from deephyper.models.types.steptype import StepType
 
 
 
@@ -16,7 +16,7 @@ class DiscreteParameter(Parameter):
 
     def __init__(self, name, low, high, step_type=StepType.ARITHMETIC,
                  step_size=1, drt=DiscreteRepresentationType.DEFAULT,
-                 map_negative=False):
+                 map_negative=False, start=None):
         """
         Keyword arguments:
         name (str) -- A string to identify the parameter.
@@ -35,6 +35,8 @@ class DiscreteParameter(Parameter):
                                type and its values should be negative, set this
                                flag and specify positive values for low, high,
                                and step_size.
+        start (any) -- The starting point for evaluation on this hyperparameter.
+                         Defaults to 'low' if not specified.
         """
         # Implementation note: For geometric parameters with negative intervals,
         # it is easier to invert the interval.
@@ -47,7 +49,10 @@ class DiscreteParameter(Parameter):
         self.step_size = step_size
         self.drt = drt
         self.map_negative = map_negative
-        super(DiscreteParameter, self).__init__(name, ParameterType.DISCRETE)
+        if start is None:
+            start = low
+        super(DiscreteParameter, self).__init__(name, ParameterType.DISCRETE,
+                                                start)
 
     # Provide a convenient way to output information about the parameter.
     def __str__(self):

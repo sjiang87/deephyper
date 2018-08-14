@@ -1,4 +1,4 @@
-from deephyper.search.models.types.parametertype import ParameterType
+from deephyper.models.types.parametertype import ParameterType
 
 class Parameter(object):
     """
@@ -7,17 +7,20 @@ class Parameter(object):
     Attributes:
     name (str) -- A string that identifies the parameter.
     parameter_type (ParameterType) -- Specifies the type of the parameter.
+    start (any) -- The starting point for evaluation on this hyperparameter.
     """
 
-    def __init__(self, name, parameter_type):
+    def __init__(self, name, parameter_type, start):
         """
         Keyword arguments:
         name (str) -- See class attributes.
         parameter_type (ParameterType) -- See class attributes.
+        start (any) -- See class attributes.
         """
         super(Parameter, self).__init__()
         self.name = name
         self.type = parameter_type
+        self.start = start
         self.debug()
 
         return

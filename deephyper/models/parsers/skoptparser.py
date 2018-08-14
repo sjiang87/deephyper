@@ -1,11 +1,11 @@
 from skopt.space.space import Categorical, Integer, Real, Space
 
-from deephyper.search.models.parser import Parser
-from deephyper.search.models.types.discreterepresentationtype import \
+from deephyper.models.parser import Parser
+from deephyper.models.types.discreterepresentationtype import \
     DiscreteRepresentationType
-from deephyper.search.models.types.parametertype import ParameterType
-from deephyper.search.models.types.priortype import PriorType
-from deephyper.search.models.types.steptype import StepType
+from deephyper.models.types.parametertype import ParameterType
+from deephyper.models.types.priortype import PriorType
+from deephyper.models.types.steptype import StepType
 
 class SKOptParser(Parser):
     """
@@ -25,7 +25,7 @@ class SKOptParser(Parser):
         param (Parameter) -- A parameter that will be transformed
                              into an SKOpt dimension.
         """
-        param_name = param.alias
+        param_name = param.name
         param_type = param.type
 
         if param_type == ParameterType.CONTINUOUS:
