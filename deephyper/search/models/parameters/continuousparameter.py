@@ -1,6 +1,6 @@
 from deephyper.search.models.parameter import Parameter
-from deephyper.search.models.types.priortype import PriorType
 from deephyper.search.models.types.parametertype import ParameterType
+from deephyper.search.models.types.priortype import PriorType
 
 class ContinuousParameter(Parameter):
     """
@@ -11,11 +11,13 @@ class ContinuousParameter(Parameter):
     def __init__(self, name, low, high, prior=PriorType.UNIFORM):
         """
         Keyword arguments:
-        name -- A string to identify the parameter.
-        low -- The lower bound of the parameter's value interval (inclusive).
-        high -- The upper bound of the parameter's value interval (inclusive).
-        prior -- A `PriorType` that specifies how distributions are sampled
-                 from the interval.
+        name (str) -- A string to identify the parameter.
+        low (numeric) -- The lower bound of the parameter's value interval
+                         (inclusive).
+        high (numeric) -- The upper bound of the parameter's value interval
+                          (inclusive).
+        prior (PriorType) -- Determines how samples from the interval are
+                             distributed.
         """
         # Implementation note: Optimizers may implement the same priors
         # differently. We choose to not internally ensure that distributions
@@ -32,8 +34,8 @@ class ContinuousParameter(Parameter):
 
     # Provide a convenient way to output information about the parameter.
     def __str__(self):
-        return ("<param n: \'{0}\', t: {1}, low: {2}, high: {3}, prior: {4}>".format(
-                self.name, self.type, self.low, self.high, self.prior))
+        return ("<param n: \'{0}\', t: {1}, low: {2}, high: {3}, prior: {4}>"
+                .format(self.name, self.type, self.low, self.high, self.prior))
 
     def __repr__(self):
         return self.__str__()

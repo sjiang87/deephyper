@@ -1,4 +1,5 @@
 from skopt.space.space import Categorical, Integer, Real, Space
+
 from deephyper.search.models.parser import Parser
 from deephyper.search.models.types.discreterepresentationtype import \
     DiscreteRepresentationType
@@ -21,17 +22,17 @@ class SKOptParser(Parser):
         Generate a parameter that conforms to SKOpt's format.
 
         Keyword arguments:
-        param -- An object of type `Parameter` that will be transformed
-                 into an SKOpt dimension.
+        param (Parameter) -- A parameter that will be transformed
+                             into an SKOpt dimension.
         """
-        param_name = param.name
+        param_name = param.alias
         param_type = param.type
 
         if param_type == ParameterType.CONTINUOUS:
             if param.prior == PriorType.UNIFORM:
                 prior = "uniform"
             elif param.prior == PriorType.LOGUNIFORM:
-                prior = "loguniform"
+                prior = "log-uniform"
             return Real(low=param.low, high=param.high, prior=prior,
                         name=param_name)
 
@@ -55,18 +56,19 @@ class SKOptParser(Parser):
         elif param_type == ParameterType.NON_ORDINAL:
             return Categorical(categories=param.values, name=param_name)
 
-        elif param_type == ParameterType.CONDITONAL:
+        elif param_type == ParameterType.CONDITIONAL:
             raise Exception("A conditional parameter was found while parsing "
                             "for SKOpt. SKOpt does not support conditional "
                             "parameters. {0}".format(param))
 
     @classmethod
-    def transform_space(cls, params):
+    def transform_params(cls, params):
         """
-        Generate a space that conforms to SKOpt's format.
+        Generate a space that conforms to SKOpt's format
+        from a list of hyperparameters.
 
         Keyword arguments:
-        params -- An iterable that contains parameter objects.
+        params (list) -- A list of hyperparameters.
         """
         dimensions = []
         for param in params:
