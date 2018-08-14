@@ -1,198 +1,162 @@
-# Common hyperparameter definitions.
+"""
+A module for common hyperparameter definitions.
+"""
 from deephyper.search.models.base import param, step
 
-loss_weights = param.non_ordinal("loss_weights", [list(), dict()])
-weighted_metrics = param.non_ordinal("weighted_metrics", [list()])
-#batch_size = param.discrete("batch_size", 1, 10000), step.ARITHMETIC, 1)
-#epochs = param.discrete("epochs", 1, TRAINING_SIZE), step.ARITHMETIC, 1)
-shuffle = param.non_ordinal("shuffle", [True, False, "batch"])
-class_weight = param.non_ordinal("class_weight", [dict()])
-# sample_weight = param.non_ordinal("sample_weight", [np.array([])])
-#test_size = param.discrete("test_size", INPUT_SIZE, TRAINING_SIZE),
-    #step.ARITHMETIC, 1)
-hidden_size = param.discrete("hidden_size", 0, 30, step.ARITHMETIC, 1)
-dropout = param.continuous("dropout", 0, 1)
-#filters = param.discrete("filter", 1, 100), step.ARITHMETIC, 1)
-kernel_size = param.discrete("kernal_size", 1, 7, step.ARITHMETIC, 1)
-padding = param.non_ordinal("padding", ["valid", "same"])
-stride = param.discrete("stride", 1, 6, step.ARITHMETIC, 1)
-#dilation_rate = param.non_ordinal("dilation_rate", ["dilation_rate > 1 & stride == 1",
-   # "dilation_rate == 1 & stride > 1"])
-data_augmentation = param.non_ordinal('data_augmentation', [False, True])
 clipnorm = param.continuous('clipnorm', 1e-04, 1)
 clipvalue = param.continuous('clipvalue', 1e-04, 1)
-earlystop = param.non_ordinal('earlystop', ['False', 'True'])
-# DO NOT _OPTIMIZE OVER LOSS_FUNCTION
-# loss_function = param.non_ordinal("loss_function", ["mean_squared_error", "mean_absolute_error",
-#     "mean_squared_percentage_error", "mean_squared_logarithmic_error",
-#     "squared_hinge", "hinge", "categorical_hinge", "logcosh",
-#     "categorical_crossentropy", "sparse_categorical_crossentropy",
-#     "binary_crossentropy", "kullback_leibler_divergence", "poisson",
-#     "cosine_proximity"])
+data_augmentation = param.non_ordinal('data_augmentation', [False, True])
+dropout = param.continuous("dropout", 0, 1)
+filter = param.discrete("filter", 1, 100, step.ARITHMETIC, 1)
+hidden_size = param.discrete("hidden_size", 0, 30, step.ARITHMETIC, 1)
+kernel_size = param.discrete("kernel_size", 1, 7, step.ARITHMETIC, 1)
+padding = param.non_ordinal("padding", ["valid", "same"])
+shuffle = param.non_ordinal("shuffle", [True, False, "batch"])
+stride = param.discrete("stride", 1, 6, step.ARITHMETIC, 1)
+
+# Optimizer hyperparameters
+amsgrad = param.non_ordinal("amsgrad", [True, False])
+beta_1 = param.continuous("beta_1", 0, 1 - 1e-06)
+beta_2 = param.continuous("beta_2", 0, 1 - 1e-08)
+decay = param.continuous("decay", 0, 1)
+epsilon = param.continuous("epsilon", 1e-20, 1)
+learning_rate = param.continuous("learning_rate", 0, 1)
+learning_rate_adadelta = param.continuous("learning_rate", 0, 10)
+momentum = param.continuous("momentum", 0, 1)
+nesterov = param.non_ordinal("nesterov", [True, False])
+rho = param.continuous("rho", 0, 1)
 
 optimizer = param.conditional("optimizer", {
-    "sgd": [param.continuous("learning_rate", 0, 1),
-            param.continuous("decay", 0, 1),
-            param.continuous('momentum', 0, 1),
-            param.non_ordinal('nesterov', [True, False])],
-
-    "adam": [param.continuous("learning_rate", 0, 1),
-            param.continuous("beta_1", 0, 1 - 1e-06),
-            param.continuous("beta_2", 0, 1 - 1e-08),
-            param.continuous("decay", 0, 1),
-            param.continuous("epsilon", 1e-20, 1),
-            param.non_ordinal('amsgrad', [True, False])],
-
-    "adamax": [param.continuous("learning_rate", 0, 1),
-                param.continuous("beta_1", 0, 1 - 1e-06),
-                param.continuous("beta_2", 0, 1 - 1e-08),
-                param.continuous("decay", 0, 1),
-                param.continuous("epsilon", 1e-20, 1)],
-
-    "nadam": [param.continuous("learning_rate", 0, 1),
-                param.continuous("beta_1", 0, 1 - 1e-06),
-                param.continuous("beta_2", 0, 1 - 1e-08),
-                param.continuous("epsilon", 1e-20, 1)],
-
-    "rmsprop": [param.continuous('learning_rate', 0, 1),
-                param.continuous("rho", 0, 1),
-                param.continuous("decay", 0, 1),
-                param.continuous("epsilon", 1e-20, 1)],
-
-    "adadelta": [param.continuous("rho", 0, 10),
-                param.continuous("decay", 0, 1),
-                param.continuous("epsilon", 1e-20, 1),
-                param.continuous("learning_rate", 0, 1)],
-
-    "adagrad": [param.continuous("decay", 0, 1),
-                param.continuous("epsilon", 1e-20, 1),
-                param.continuous("learning_rate", 0, 1)],
+    "sgd": [learning_rate, momentum, decay, nesterov],
+    "rmsprop": [learning_rate, rho, epsilon, decay],
+    "adagrad": [learning_rate, epsilon, decay],
+    "adadelta": [learning_rate_adadelta, rho, epsilon, decay],
+    "adam": [learning_rate, beta_1, beta_2, epsilon, decay, amsgrad],
+    "adamax": [learning_rate, beta_1, beta_2, epsilon, decay],
+    # schedule_decay can also be specified for nadam but we choose
+    # not to optimize over that parameter.
+    "nadam": [learning_rate, beta_1, beta_2, epsilon]
 })
 
-# DO NOT _OPTIMIZE OVER METRICS
-# metrics = param.conditional("metrics", {
-#     "binary_accuracy": [],
-#     "categorical_accuracy": [],
-#     #"sparse_categorical_accuracy": [],
-#     "top_k_categorical_accuracy":[param.discrete("k", 4, 6), step.ARITHMETIC, 1)],
-#     #"sparse_top_k_categorical_accuracy":[],
-# })
-
-# callback = param.conditional("callback", {
-#     "EarlyStopping": [param.non_ordinal("monitor", [str()]),
-#                     param.continuous("baseline", None),
-#                     param.discrete("D", 1, EPOCH),step.ARITHMETIC, 1),
-#                     param.discrete("C", 0, EPOCH),step.ARITHMETIC, 1)],
-#
-#     "LearningRateScheduler": [param.discrete("schedule", 0, EPOCH_NUM),                            step.ARITHMETIC, 1)],
-#
-#     "ReduceLROnPlateau": [param.discrete("cooldown", 1, EPOCH_NUM),                                 step.ARITHMETIC, 1),
-#                         param.continuous("min_lr", 0, 50),
-#                         param.discrete("D", 1, EPOCH_NUM),step.ARITHMETIC, 1),
-#                         param.discrete("C", 0, EPOCH_NUM), step.ARITHMETIC, 1)]
-# })
+# Activation function hyperparameters
+alpha = param.continuous("alpha", 0, 1)
+alpha1 = param.continuous("alpha1", 0, 1)
+alpha2 = param.continuous("alpha2", 0, 1)
+alpha3 = param.continuous("alpha3", 0, 1)
+alpha4 = param.continuous("alpha4", 0, 1)
+alpha5 = param.continuous("alpha5", 0, 1)
 
 activation = param.conditional("activation", {
-    #"softmax": [param.discrete("axis", -5, 5), step.ARITHMETIC, 1)],
-    "elu": [param.continuous("alpha", 0, 1)],
+    "elu": [alpha],
     "selu": [],
     "softplus": [],
     "softsign": [],
-    "relu": [param.continuous("alpha", 0, 1)], # max_value can also be specified for relu but we choose not to place a limit.
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
     "tanh": [],
     "sigmoid": [],
     "hard_sigmoid": [],
     "linear": []
 })
-
 activation1 = param.conditional("activation1", {
-    #"softmax": [param.discrete("axis", -5, 5), step.ARITHMETIC, 1)],
-    "elu": [param.continuous("alpha1", 0, 1)],
+    "elu": [alpha],
     "selu": [],
     "softplus": [],
     "softsign": [],
-    "relu": [param.continuous("alpha1", 0, 1)], # max_value can also be specified for relu but we choose not to place a limit.
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
     "tanh": [],
     "sigmoid": [],
     "hard_sigmoid": [],
     "linear": []
 })
-
 activation2 = param.conditional("activation2", {
-    #"softmax": [param.discrete("axis", -5, 5), step.ARITHMETIC, 1)],
-    "elu": [param.continuous("alpha2", 0, 1)],
+    "elu": [alpha],
     "selu": [],
     "softplus": [],
     "softsign": [],
-    "relu": [param.continuous("alpha2", 0, 1)], # max_value can also be specified for relu but we choose not to place a limit.
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
     "tanh": [],
     "sigmoid": [],
     "hard_sigmoid": [],
     "linear": []
 })
-
 activation3 = param.conditional("activation3", {
-    #"softmax": [param.discrete("axis", -5, 5), step.ARITHMETIC, 1)],
-    "elu": [param.continuous("alpha3", 0, 1)],
+    "elu": [alpha],
     "selu": [],
     "softplus": [],
     "softsign": [],
-    "relu": [param.continuous("alpha3", 0, 1)], # max_value can also be specified for relu but we choose not to place a limit.
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
     "tanh": [],
     "sigmoid": [],
     "hard_sigmoid": [],
     "linear": []
 })
-
 activation4 = param.conditional("activation4", {
-    #"softmax": [param.discrete("axis", -5, 5), step.ARITHMETIC, 1)],
-    "elu": [param.continuous("alpha4", 0, 1)],
+    "elu": [alpha],
     "selu": [],
     "softplus": [],
     "softsign": [],
-    "relu": [param.continuous("alpha4", 0, 1)], # max_value can also be specified for relu but we choose not to place a limit.
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
     "tanh": [],
     "sigmoid": [],
     "hard_sigmoid": [],
     "linear": []
 })
-
 activation5 = param.conditional("activation5", {
-    #"softmax": [param.discrete("axis", -5, 5), step.ARITHMETIC, 1)],
-    "elu": [param.continuous("alpha5", 0, 1)],
+    "elu": [alpha],
     "selu": [],
     "softplus": [],
     "softsign": [],
-    "relu": [param.continuous("alpha5", 0, 1)], # max_value can also be specified for relu but we choose not to place a limit.
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
     "tanh": [],
     "sigmoid": [],
     "hard_sigmoid": [],
     "linear": []
 })
 
-initializer = param.conditional("initializer", {
-    "RandomNormal": [param.continuous("mean", 0, 100),
-                    param.continuous("stddev", 0, 100)],
+# Flat versions of conditional parameters.
+optimizer_flat = param.non_ordinal("optimizer",
+    ["sgd", "rmsprop", "adagrad", "adadelta", "adam", "adamax", "nadam"])
+optimizer_flat_params = [optimizer_flat, amsgrad, beta_1, beta_2, decay,
+    epsilon, learning_rate, momentum, nesterov, rho]
 
-    "TruncatedNormal": [param.continuous("mean", 0, 100),
-                        param.continuous("stddev", 0, 100)],
+activation_flat = param.non_ordinal("activation",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"])
+activation_flat_params = [activation_flat, alpha]
 
-    "RandomUniform": [param.continuous("minval", 0, 100),
-                        param.continuous("maxval", 0, 100)],
+activation1_flat = param.non_ordinal("activation1",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"])
+activation1_flat_params = [activation1_flat, alpha1]
 
-    "VarianceScaling": [param.continuous("scale", 0, 100),
-                        param.non_ordinal("mode", ["fan_in", "fan_out", "fan_avg"]),
-                        param.non_ordinal("distribution", ["normal", "uniform"])
-                        ],
+activation2_flat = param.non_ordinal("activation2",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"])
+activation2_flat_params = [activation2_flat, alpha2]
 
-    "Orthogonal": [param.discrete("gain", 0, 100, step.ARITHMETIC, 1)],
-    "identity": [param.discrete("gain", 0, 100, step.ARITHMETIC, 1)],
-    "zeros": [],
-    "ones": [],
-    "lecun_uniform": [],
-    "glorot_normal": [],
-    "glorot_uniform": [],
-    "he_normal": [],
-    "lecun_normal": [],
-    "he_uniform": []
-})
+activation3_flat = param.non_ordinal("activation3",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"])
+activation3_flat_params = [activation3_flat, alpha3]
+
+activation4_flat = param.non_ordinal("activation4",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"])
+activation4_flat_params = [activation4_flat, alpha4]
+
+activation5_flat = param.non_ordinal("activation5",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"])
+activation5_flat_params = [activation5_flat, alpha5]
