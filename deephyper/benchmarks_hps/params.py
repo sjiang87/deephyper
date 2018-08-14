@@ -39,9 +39,79 @@ optimizer = param.conditional("optimizer", {
 })
 
 # Activation function hyperparameters
-alpha = param.continuous("alpha", 0, 1)
+alpha = param.continuous("alpha", 0, 1, start=0)
+alpha1 = param.continuous("alpha1", 0, 1, start=0)
+alpha2 = param.continuous("alpha2", 0, 1, start=0)
+alpha3 = param.continuous("alpha3", 0, 1, start=0)
+alpha4 = param.continuous("alpha4", 0, 1, start=0)
+alpha5 = param.continuous("alpha5", 0, 1, start=0)
 
 activation = param.conditional("activation", {
+    "elu": [alpha],
+    "selu": [],
+    "softplus": [],
+    "softsign": [],
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
+    "tanh": [],
+    "sigmoid": [],
+    "hard_sigmoid": [],
+    "linear": []
+})
+activation1 = param.conditional("activation1", {
+    "elu": [alpha],
+    "selu": [],
+    "softplus": [],
+    "softsign": [],
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
+    "tanh": [],
+    "sigmoid": [],
+    "hard_sigmoid": [],
+    "linear": []
+})
+activation2 = param.conditional("activation2", {
+    "elu": [alpha],
+    "selu": [],
+    "softplus": [],
+    "softsign": [],
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
+    "tanh": [],
+    "sigmoid": [],
+    "hard_sigmoid": [],
+    "linear": []
+})
+activation3 = param.conditional("activation3", {
+    "elu": [alpha],
+    "selu": [],
+    "softplus": [],
+    "softsign": [],
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
+    "tanh": [],
+    "sigmoid": [],
+    "hard_sigmoid": [],
+    "linear": []
+})
+activation4 = param.conditional("activation4", {
+    "elu": [alpha],
+    "selu": [],
+    "softplus": [],
+    "softsign": [],
+    # max_value can also be specified for relu but we choose
+    # not to optimize over that parameter.
+    "relu": [alpha],
+    "tanh": [],
+    "sigmoid": [],
+    "hard_sigmoid": [],
+    "linear": []
+})
+activation5 = param.conditional("activation5", {
     "elu": [alpha],
     "selu": [],
     "softplus": [],
@@ -65,3 +135,28 @@ activation_flat = param.non_ordinal("activation",
     ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
      "hard_sigmoid", "linear"])
 activation_flat_params = [activation_flat, alpha]
+
+activation1_flat = param.non_ordinal("activation1",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"], start='relu')
+activation1_flat_params = [activation1_flat, alpha1]
+
+activation2_flat = param.non_ordinal("activation2",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"], start='relu')
+activation2_flat_params = [activation2_flat, alpha2]
+
+activation3_flat = param.non_ordinal("activation3",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"], start='relu')
+activation3_flat_params = [activation3_flat, alpha3]
+
+activation4_flat = param.non_ordinal("activation4",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"], start='relu')
+activation4_flat_params = [activation4_flat, alpha4]
+
+activation5_flat = param.non_ordinal("activation5",
+    ["elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+     "hard_sigmoid", "linear"], start='relu')
+activation5_flat_params = [activation5_flat, alpha5]

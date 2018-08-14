@@ -1,6 +1,6 @@
 from collections import OrderedDict
-from deephyper.benchmarks_hps.params import optimizer, dropout, activation1, activation2
-from deephyper.search.models.base import param, step, padding
+from deephyper.benchmarks_hps.params import optimizer, dropout, activation1, activation2, padding
+from deephyper.search.models.base import param, step
 
 space = [
     param.discrete('batch_size', 5, 60, step.ARITHMETIC, 1),
