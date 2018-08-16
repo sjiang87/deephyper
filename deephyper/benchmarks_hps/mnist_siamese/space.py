@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from deephyper.benchmarks_hps.params import optimizer, dropout, activation1, activation2, activation3
+from deephyper.benchmarks_hps.params import optimizer, dropout, activation
 from deephyper.search.models.base import param, step
 class Problem():
     def __init__(self):
@@ -8,9 +8,7 @@ class Problem():
                 param.discrete('units', 32, 512, step.ARITHMETIC, 1),
                 param.discrete('batch_size', 32, 512, step.ARITHMETIC, 1),
                 param.discrete('epochs', 10, 45, step.ARITHMETIC, 1),
-                activation1,
-                activation2,
-                activation3,
+                activation,
                 dropout,
                 optimizer
         ]

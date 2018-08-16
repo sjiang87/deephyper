@@ -67,17 +67,10 @@ def run(param_dict=None, verbose=2):
     EPOCHS = param_dict['epochs']
     DROPOUT = param_dict['dropout']
     ACTIVATION = util.get_activation_instance(param_dict['activation'], param_dict['alpha'])
-    ACTIVATION1 = util.get_activation_instance(param_dict['activation1'], param_dict['alpha1'])
-    ACTIVATION2 = util.get_activation_instance(param_dict['activation2'], param_dict['alpha2'])
     NHIDDEN = param_dict['nhidden']
     NUNITS = param_dict['nunits']
     OPTIMIZER      = util.get_optimizer_instance(param_dict)
     
-    #other
-    LOSS_FUNCTION = param_dict['loss_function']
-    METRICS = param_dict['metrics']
-    model_path = ''
-
     #constants
     num_classes = 10
     patience  = math.ceil(EPOCHS/2)
@@ -116,11 +109,6 @@ def run(param_dict=None, verbose=2):
     model = Sequential()
     model.add(Dense(NUNITS, activation=ACTIVATION, input_shape=(784,)))
     model.add(Dropout(DROPOUT))
-    for i in range(NHIDDEN):
-        model.add(Dense(NUNITS, activation=ACTIVATION1))
-        model.add(Dropout(DROPOUT))
-        model.add(Dense(NUNITS, activation=ACTIVATION2))
-        model.add(Dropout(DROPOUT))
     model.add(Dense(num_classes, activation='softmax'))
     model.summary()
     model.compile(loss='categorical_crossentropy',
@@ -128,9 +116,6 @@ def run(param_dict=None, verbose=2):
             metrics=['accuracy'])
 
     timer.end()
-
-
-
 
     timer.start('model training')
     history = model.fit(x_train, y_train,

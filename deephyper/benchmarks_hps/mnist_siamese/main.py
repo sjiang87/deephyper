@@ -100,11 +100,11 @@ def run(param_dict=None, verbose=2):
         '''
         input = Input(shape=input_shape)
         x = Flatten()(input)
-        x = Dense(UNITS, activation=ACTIVATION1)(x)
+        x = Dense(UNITS, activation=ACTIVATION)(x)
         x = Dropout(DROPOUT)(x)
-        x = Dense(UNITS, activation=ACTIVATION2)(x)
+        x = Dense(UNITS, activation=ACTIVATION)(x)
         x = Dropout(DROPOUT)(x)
-        x = Dense(UNITS, activation=ACTIVATION3)(x)
+        x = Dense(UNITS, activation=ACTIVATION)(x)
         return Model(input, x)
 
 
@@ -129,9 +129,7 @@ def run(param_dict=None, verbose=2):
     BATCH_SIZE      = param_dict['batch_size']
     EPOCHS          = param_dict['epochs']
     DROPOUT         = param_dict['dropout']
-    ACTIVATION1      = util.get_activation_instance(param_dict['activation1'], param_dict['alpha1'])
-    ACTIVATION2      = util.get_activation_instance(param_dict['activation2'], param_dict['alpha2'])
-    ACTIVATION3      = util.get_activation_instance(param_dict['activation3'], param_dict['alpha3'])
+    ACTIVATION      = util.get_activation_instance(param_dict['activation'], param_dict['alpha'])
     UNITS           = param_dict['units']
     OPTIMIZER       = util.get_optimizer_instance(param_dict)
     patience  = math.ceil(EPOCHS/2)
@@ -223,6 +221,15 @@ def run(param_dict=None, verbose=2):
 def build_parser():
     # Build this benchmark"s cli parser on top of the base parser.
     parser = build_base_parser()
+    parser.add_argument("--activation", action="store",
+                        dest="activation",
+                        nargs="?", const=1, type=str, default="relu",
+                        choices=["softmax", "elu", "selu", "softplus", "softsign", "relu", "tanh", "sigmoid",
+                                 "hard_sigmoid", "linear", "LeakyReLU", "PReLU", "ELU", "ThresholdedReLU"],
+                        help="type of activation function hidden layer")
+
+    parser.add_argument("--alpha", action="store", dest="alpha",
+                        type=float, default=1.0)
     parser.add_argument('--units', action='store', dest='units',
                         nargs='?', const=2, type=int, default='128',
                         help='dimensionality of the output space')
