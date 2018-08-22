@@ -4,8 +4,8 @@ class Problem():
         space = OrderedDict()
         space['epochs'] = (5, 2000)
         space['batch_size'] = (20, 2000)
-        space['learning_rate'] = (0, 1)
-        space['regularization'] = (0,1)
+        space['learning_rate'] = (0.0, 1.0)
+        space['regularization'] = (0.0,1.0)
 
         self.space = space
         self.params = self.space.keys()
