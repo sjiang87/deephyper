@@ -109,6 +109,7 @@ def create_evaluator(opt_config):
                     backend=opt_config.backend,
                     model_path=opt_config.model_path,
                     data_source=opt_config.data_source,
-                    stage_in_destination=opt_config.stage_in_destination
+                    stage_in_destination=opt_config.stage_in_destination,
+                    acq_func = opt_config.amls_acq_func
                    )
     return evaluator

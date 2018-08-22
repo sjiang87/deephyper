@@ -2,14 +2,15 @@ from collections import OrderedDict
 class Problem():
     def __init__(self):
         space = OrderedDict()
-        space['epochs'] = (5, 500)
+        space['epochs'] = (2,5)
         #bechmark specific parameters
-        space['f1_size'] = [1, 3, 5, 7]
-        space['f2_size'] = [1, 3, 5, 7]
-        space['f1_units'] = [8, 16, 32, 64]
-        space['f2_units'] = [8, 16, 32, 64]
-        space['p_size'] = [2, 3, 4]
-        space['nunits'] = (1, 1000)
+        #space['f1_size'] = [1, 3, 5, 7]
+        #space['f2_size'] = [1, 3, 5, 7]
+        space['f1_units'] = [16, 32, 64]
+        space['f2_units'] = [16, 32, 64]
+        #space['p_size'] = [2, 3, 4]
+        #space['nunits'] = (1, 1000)
+        space['nunits']  = [64,256]
         #network parameters
         space['activation'] = ['relu', 'elu', 'selu', 'tanh'] #['relu', 'softmax', 'elu', 'selu', 'softplus', 'tanh', 'sigmoid']
         space['batch_size'] = (8, 1024)

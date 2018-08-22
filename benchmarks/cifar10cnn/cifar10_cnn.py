@@ -2,6 +2,9 @@ from __future__ import print_function
 import sys
 from pprint import pprint
 import os
+import mpi4py.rc
+import time
+mpi4py.rc.initialize = False
 
 here = os.path.dirname(os.path.abspath(__file__))
 top = os.path.dirname(os.path.dirname(os.path.dirname(here)))
@@ -41,7 +44,7 @@ def run(param_dict):
     param_dict = keras_cmdline.fill_missing_defaults(augment_parser, param_dict)
     optimizer = keras_cmdline.return_optimizer(param_dict)
     pprint(param_dict)
-    
+    start_time = time.time()
     timer.start('stage in')
     if param_dict['data_source']:
         data_source = param_dict['data_source']
@@ -59,6 +62,7 @@ def run(param_dict):
     num_classes = 10
 
     BATCH_SIZE = param_dict['batch_size']
+    #EPOCHS = param_dict['epochs']
     EPOCHS = param_dict['epochs']
     DROPOUT = param_dict['dropout']
     ACTIVATION = param_dict['activation']
@@ -95,6 +99,7 @@ def run(param_dict):
         initial_epoch = savedModel.initial_epoch
 
     if model is None:
+        """
         model = Sequential()
         
         model.add(Conv2D(F1_UNITS, (F1_SIZE, F1_SIZE), padding='same',
@@ -120,7 +125,40 @@ def run(param_dict):
         model.add(Activation('softmax'))
         model.summary()
         model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+        """
 
+        
+        model = Sequential()
+        model.add(Conv2D(input_shape=x_train.shape[1:], filters=F1_UNITS, kernel_size=(3,3)))
+        model.add(Activation('relu'))
+        model.add(Conv2D(filters=F2_UNITS, kernel_size=(3,3), strides=2))
+        model.add(Activation('relu'))
+        model.add(Dropout(DROPOUT))
+        model.add(Conv2D(filters=32, kernel_size=(3,3)))
+        model.add(Activation(ACTIVATION))
+        model.add(Flatten())
+        model.add(layers.normalization.BatchNormalization())
+        model.add(Dense(NUNITS))
+        model.add(Activation(ACTIVATION))
+        model.add(Dense(num_classes, activation="softmax"))
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+        
+        """
+        model = Sequential()
+        model.add(Conv2D(input_shape=x_train.shape[1:], filters=32, 
+                 use_bias=True, kernel_size=(3,3)))
+        model.add(Activation(ACTIVATION))
+        model.add(Dropout(0.1))
+        model.add(Conv2D(filters= 64, use_bias=False, kernel_size=(5,5), strides=2))
+        model.add(Activation(ACTIVATION))
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+        model.add(Dense(NUNITS))
+        model.add(Activation(ACTIVATION))
+        model.add(Dropout(DROPOUT))
+        model.add(Dense(num_classes, activation="softmax"))
+        model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=    ['accuracy'])
+        """
     x_train = x_train.astype('float32')
     x_test = x_test.astype('float32')
     x_train /= 255
@@ -177,6 +215,7 @@ def run(param_dict):
         util.save_meta_data(param_dict, model_mda_path)
         timer.end()
 
+    end_time = time.time()
     print('OUTPUT:', -score[1])
     return -score[1]
 
@@ -205,7 +244,7 @@ def augment_parser(parser):
                         help='pool size')
 
     parser.add_argument('--nunits', action='store', dest='nunits',
-                        nargs='?', const=2, type=int, default='512',
+                        nargs='?', const=2, type=int, default='128',
                         help='number of units in FC layer')
     parser.add_argument('--dropout2', type=float, default=0.5, 
                         help='dropout after FC layer')

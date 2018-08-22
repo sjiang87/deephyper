@@ -42,7 +42,7 @@ def create_parser():
 
     parser.add_argument('--optimizer', action='store',
                         dest='optimizer',
-                        nargs='?', const=1, type=str, default='sgd',
+                        nargs='?', const=1, type=str, default='adagrad',
                         choices=['sgd', 'rmsprop', 'adagrad', 'adadelta', 'adam', 'adamax', 'nadam'],
                         help='type of optimizer')
 
@@ -66,7 +66,7 @@ def create_parser():
 
     # optimizer parameters
     parser.add_argument('--learning_rate', action='store', dest='lr',
-                        nargs='?', const=1, type=float, default=0.01,
+                        nargs='?', const=1, type=float, default=7.543875,
                         help='float >= 0. Learning rate')
     parser.add_argument('--momentum', action='store', dest='momentum',
                         nargs='?', const=1, type=float, default=0.0,
@@ -100,7 +100,7 @@ def create_parser():
     parser.add_argument('--timeout', help="benchmark timeout in mins", 
                         action='store', dest='timeout',
                         nargs='?', const=1, type=float, 
-                        default=60.0)
+                        default=60000000000000.0)
     return(parser)
 
 def return_optimizer(param_dict):

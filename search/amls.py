@@ -5,6 +5,8 @@ import pickle
 import signal
 import sys
 import numpy as np
+import time
+from math import log
 from numpy import integer, floating, ndarray
 
 HERE = os.path.dirname(os.path.abspath(__file__)) # search dir
@@ -17,8 +19,8 @@ from deephyper.search import util
 logger = util.conf_logger('deephyper.search.amls')
 
 SERVICE_PERIOD = 2          # Delay (seconds) between main loop iterations
-CHECKPOINT_INTERVAL = 10    # How many jobs to complete between optimizer checkpoints
-SEED = 12345
+CHECKPOINT_INTERVAL = 4    # How many jobs to complete between optimizer checkpoints
+SEED = 21278
 
 profile_timer = util.Timer()
 
@@ -76,13 +78,32 @@ class Optimizer:
         self.counter = 0
 
     def _get_lie(self):
+        """
         if self.strategy == "cl_min":
             return min(self._optimizer.yi) if self._optimizer.yi else 0.0
         elif self.strategy == "cl_mean":
             return self._optimizer.yi.mean() if self._optimizer.yi else 0.0
         else:
             return  max(self._optimizer.yi) if self._optimizer.yi else 0.0
+        """
+        ti_available = "ps" in self._optimizer.acq_func and len(self._optimizer.yi) > 0
+        ti = [t for (_, t) in self._optimizer.yi] if ti_available else None
+        if self.strategy == "cl_min":
+            y_lie = np.min(self._optimizer.yi) if self._optimizer.yi else 0.0  # CL-min lie
+            t_lie = np.min(ti) if ti is not None else log(sys.float_info.max)
+        elif self.strategy == "cl_mean":
+            y_lie = np.mean(self._optimizer.yi) if self._optimizer.yi else 0.0  # CL-mean lie
+            t_lie = np.mean(ti) if ti is not None else log(sys.float_info.max)
+        else:
+            y_lie = np.max(self._optimizer.yi) if self._optimizer.yi else 0.0  # CL-max lie
+            t_lie = np.max(ti) if ti is not None else log(sys.float_info.max)
 
+        # Lie to the optimizer.
+        if "ps" in self._optimizer.acq_func:
+            return    (y_lie, t_lie)
+        else:
+            return    y_lie
+       
     def _xy_from_dict(self):
         keys = list(self.evals.keys())
         XX = [self._decode(x) for x in keys]
@@ -115,7 +136,10 @@ class Optimizer:
         XX = self._optimizer.ask(n_points=n_points)
         for x in XX:
             key = self._encode(x)
-            self.evals[key] = 0.0
+            if "ps" in self._optimizer.acq_func:
+              self.evals[key] = (0.0,800)
+            else:
+              self.evals[key] = 0.0  
         self.counter += n_points
         return XX
         
@@ -125,12 +149,21 @@ class Optimizer:
         for x,y in xy_data:
             key = self._encode(x)
             assert key in self.evals
-            self.evals[key] = (y if y < sys.float_info.max else maxval)
+            if "ps" in self._optimizer.acq_func:
+              if isinstance(y, tuple):
+                self.evals[key] = y
+              else:
+                self.evals[key] = (y, 36000)  
+            else:   
+               self.evals[key] = (y if y < sys.float_info.max else maxval)
 
         self._optimizer.Xi = []
         self._optimizer.yi = []
         XX, YY = self._xy_from_dict()
         assert len(XX) == len(YY) == self.counter
+        #asen_code
+        logger.info(f"XX:{XX}, YY:{YY}")
+        #asen_code
         self._optimizer.tell(XX, YY)
         assert len(self._optimizer.Xi) == len(self._optimizer.yi) == self.counter
 
@@ -166,28 +199,52 @@ def main(args):
     logger.info(f"Generating {cfg.num_workers} initial points...")
     XX = optimizer.ask_initial(n_points=cfg.num_workers)
     for x in XX: evaluator.add_eval(x, re_evaluate=cfg.repeat_evals)
-
+    #asen_code
+    start_time = time.time()
+    time_stamp = []
+    maximum_seen = []
+    #asen_code 
+    
     # MAIN LOOP
     for elapsed_str in timer:
         logger.info(f"Elapsed time: {elapsed_str}")
         if len(evaluator.evals) == cfg.max_evals: break
 
         results = list(evaluator.get_finished_evals())
+        
         if results:
             logger.info(f"Refitting model with batch of {len(results)} evals")
             #profile_timer.start('tell')
             optimizer.tell(results)
             #profile_timer.end('tell')
+            #asen_code
+            logger.info(f"Telling Finished")
+            val = optimizer._optimizer.yi[0]
+            logger.info(f"Val: {val}")
+            if isinstance(val, list):
+                current_max = -(min(optimizer._optimizer.yi, key = lambda x: x[0]))[0]
+            else:
+                current_max = -min(optimizer._optimizer.yi)                   
+            time_stamp.append(time.time()-start_time)
+            maximum_seen.append(current_max)
+            logger.info(f"current_max: {current_max}")
+            #asen_code
             logger.info(f"Drawing {len(results)} points with strategy {optimizer.strategy}")
             for batch in optimizer.ask(n_points=len(results)):
                 evaluator.add_eval_batch(batch, re_evaluate=cfg.repeat_evals)
             chkpoint_counter += len(results)
+            
 
         if chkpoint_counter >= CHECKPOINT_INTERVAL:
             save_checkpoint(cfg, optimizer, evaluator)
             chkpoint_counter = 0
         sys.stdout.flush()
-    
+    #asen_code
+    with open("current_max.txt", "wb") as fp:   
+        pickle.dump(maximum_seen, fp)
+    with open("time_stamp.txt","wb") as fp:
+        pickle.dump(time_stamp,fp)
+    #asen_code        
     # EXIT
     logger.info('Hyperopt driver finishing')
     save_checkpoint(cfg, optimizer, evaluator)

@@ -19,7 +19,7 @@ class BalsamEvaluator(evaluate.Evaluator):
 
     def __init__(self, params_list, bench_module_name, num_workers=1,
                  backend='tensorflow', model_path='', data_source='', 
-                 stage_in_destination=''):
+                 stage_in_destination='', acq_func='LCB'):
         super().__init__()
 
         self.id_key_map = {}
@@ -31,6 +31,7 @@ class BalsamEvaluator(evaluate.Evaluator):
         self.model_path = model_path
         self.data_source = data_source
         self.stage_in_destination = stage_in_destination
+        self.acq_func = acq_func
         
         if dag.current_job is None:
             self._init_current_balsamjob()
@@ -97,9 +98,15 @@ class BalsamEvaluator(evaluate.Evaluator):
         y = sys.float_info.max
         for line in output.split('\n'):
             if "OUTPUT:" in line.upper():
-                y = float(line.split()[-1])
+                #y = float(line.split()[-1])
+                l = line.split()
+                if len(l) == 3:
+                    y = (float(l[1]),float(l[2]))
+                    if isnan(y[0]): y[0] = sys.float_info.max
+                else:
+                    y = float(l[1])
+                    if isnan(y): y = sys.float_info.max    
                 break
-        if isnan(y): y = sys.float_info.max
         return y
 
     def await_evals(self, to_read, timeout_sec=None, delay_sec=5):
@@ -143,8 +150,12 @@ class BalsamEvaluator(evaluate.Evaluator):
                 checked_ids.append(job_id.hex)
                 logger.warning(f"{job_id.hex} failed; marking objective as Inf")
                 key = self.id_key_map[job_id.hex]
-                y = sys.float_info.max
-                self.evals[key] = y
+                if "ps" in self.acq_func:
+                   y = sys.float_info.max
+                   self.evals[key] = (y,36000)
+                else:
+                   y = sys.float_info.max
+                   self.evals[key] = y
                 if key in self.pending_evals: del self.pending_evals[key]
                 if key not in self.elapsed_times:
                     self.elapsed_times[key] = time.time() - self.start_seconds
@@ -199,8 +210,12 @@ class BalsamEvaluator(evaluate.Evaluator):
                 logger.info(f"Failed job: {job.cute_id}")
                 key = self.id_key_map[job.job_id.hex]
                 x = self._decode(key)
-                y = sys.float_info.max
-                self.evals[key] = y
+                if "ps" in self.acq_func:
+                    y = sys.float_info.max
+                    self.evals[key] = (y, 36000)
+                else:    
+                    y = sys.float_info.max
+                    self.evals[key] = y
                 if key not in self.elapsed_times:
                     self.elapsed_times[key] = time.time() - self.start_seconds
                 del self.pending_evals[key]

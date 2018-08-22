@@ -11,7 +11,7 @@ class LocalEvaluator(evaluate.Evaluator):
 
     def __init__(self, params_list, bench_module_name, num_workers=None,
                  backend='tensorflow', model_path='', data_source='', 
-                 stage_in_destination=''):
+                 stage_in_destination='',acq_func='LCB'):
         super().__init__()
         self.executor = None
         self.num_workers = num_workers
@@ -22,6 +22,7 @@ class LocalEvaluator(evaluate.Evaluator):
         self.model_path = model_path
         self.data_source = data_source
         self.stage_in_destination = stage_in_destination
+        self.acq_func = acq_func
         logger.info("Local Evaluator instantiated")
         logger.info(f"Backend: {self.backend}")
         logger.info(f"Benchmark: {bench_module_name}")

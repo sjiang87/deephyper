@@ -2,6 +2,8 @@ from __future__ import print_function
 import sys
 from pprint import pprint
 import os
+import mpi4py.rc
+mpi4py.rc.initialize = False
 
 here = os.path.dirname(os.path.abspath(__file__))
 top = os.path.dirname(os.path.dirname(os.path.dirname(here)))
@@ -58,7 +60,7 @@ def run(param_dict):
     timer.end()
 
     num_classes = 10
-
+    
     BATCH_SIZE = param_dict['batch_size']
     EPOCHS = param_dict['epochs']
     DROPOUT = param_dict['dropout']
@@ -67,6 +69,8 @@ def run(param_dict):
     NUNITS = param_dict['nunits']
     TIMEOUT = param_dict['timeout']
 
+
+    
     timer.start('preprocessing')
 
     x_train = x_train.reshape(60000, 784)

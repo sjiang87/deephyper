@@ -67,15 +67,22 @@ def get_parser():
                                              'capsule.capsule',
                                              'cifar10cnn.cifar10_cnn',
                                              'gcn.gcn',
+                                             'resnet.resnet',
+                                             'logisticregression.log_reg',
                                              'mnistmlp.mnist_mlp',
                                              'dummy1.three_hump_camel',
                                              'dummy2.regression',
                                              'rosen2.rosenbrock2',
                                              'rosen10.rosenbrock10',
                                              'rosen30.rosenbrock30',
+                                             'tcifar10cnn.cifar10_cnn',
+                                             'tb2.babi_memnn',
+                                             'tlogisticregression.log_reg',
+                                             'tmnistmlp.mnist_mlp',
+                                             'tresnet.resnet'
                                              ]
                        )
-    parser.add_argument('acq', choices=["LCB", "EI", "PI","gp_hedge"], default ="gp_hedge")
+    parser.add_argument('acq', choices=["LCB", "EI", "PI","EIps","PIps","gp_hedge"], default ="gp_hedge")
     parser.add_argument('-q', required=True, dest='queue')
     parser.add_argument('-n', type=int, required=True, dest='nodes')
     parser.add_argument('-t', type=int, required=True, dest='time_minutes')

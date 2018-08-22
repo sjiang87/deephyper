@@ -11,6 +11,7 @@ masterLogger = None
 class Timer:
     def __init__(self):
         self.timings = {}
+        self.end_timings = {}
 
     def start(self, name):
         self.timings[name] = time.time()
@@ -23,6 +24,7 @@ class Timer:
         else:
             print(f"TIMER {name}: {elapsed:.4f} seconds")
             del self.timings[name]
+        
 
 class OptConfig:
     '''Optimizer-related options'''
@@ -185,7 +187,7 @@ def create_parser():
                         default="cl_max", choices=["cl_min", "cl_mean", "cl_max"])
 
     parser.add_argument('--amls-acq-func', action='store', 
-                        default="gp_hedge", choices=["LCB", "EI", "PI","gp_hedge"])
+                        default="gp_hedge", choices=["LCB", "EI", "PI","gp_hedge", "EIps","PIps"])
 
     parser.add_argument('--from-checkpoint', default=None,
                         help='path of checkpoint file from a previous run'

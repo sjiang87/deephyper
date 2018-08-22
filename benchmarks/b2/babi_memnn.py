@@ -16,6 +16,9 @@ Time per epoch: 3s on CPU (core i7).
 import sys
 from pprint import pprint
 import os
+import time
+import mpi4py.rc
+mpi4py.rc.initialize = False
 
 here = os.path.dirname(os.path.abspath(__file__))
 top = os.path.dirname(os.path.dirname(os.path.dirname(here)))
@@ -128,7 +131,7 @@ def run(param_dict):
     param_dict = keras_cmdline.fill_missing_defaults(augment_parser, param_dict)
     optimizer = keras_cmdline.return_optimizer(param_dict)
     pprint(param_dict)
-    
+    start_time = time.time()
     challenges = {
         # QA1 with 10,000 samples
         'single_supporting_fact_10k': 'tasks_1-20_v1-2/en-10k/qa1_single-supporting-fact_{}.txt',
@@ -309,8 +312,10 @@ def run(param_dict):
     timer.end()
     
     score = model.evaluate([inputs_test, queries_test], answers_test, batch_size=BATCH_SIZE)
+    end_time = time.time()
     print('===Validation loss:', score[0])
     print('===Validation accuracy:', score[1])
+    print('===Training Time', start_time - end_time)
     print('OUTPUT:', -score[1])
 
     
