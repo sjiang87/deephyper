@@ -189,6 +189,9 @@ def create_parser():
     parser.add_argument('--amls-acq-func', action='store', 
                         default="gp_hedge", choices=["LCB", "EI", "PI","gp_hedge", "EIps","PIps"])
 
+    parser.add_argument('--use-int-acq',type=bool, action='store',
+                        default=False)
+
     parser.add_argument('--from-checkpoint', default=None,
                         help='path of checkpoint file from a previous run'
                        )
