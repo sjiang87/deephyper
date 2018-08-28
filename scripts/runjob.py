@@ -118,6 +118,7 @@ def main():
     conf['ga_num_gen'] = args.ga_num_gen
     conf['eval_timeout_minutes'] = args.eval_timeout_minutes
     conf['acq'] = args.acq
+    conf['useint'] = args.use_int_acq
 
     if args.stage_in_path is not None:
         conf['STAGE_IN_DIR'] = args.stage_in_path

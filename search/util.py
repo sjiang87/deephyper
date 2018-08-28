@@ -11,7 +11,6 @@ masterLogger = None
 class Timer:
     def __init__(self):
         self.timings = {}
-        self.end_timings = {}
 
     def start(self, name):
         self.timings[name] = time.time()
@@ -24,7 +23,6 @@ class Timer:
         else:
             print(f"TIMER {name}: {elapsed:.4f} seconds")
             del self.timings[name]
-        
 
 class OptConfig:
     '''Optimizer-related options'''
@@ -43,6 +41,7 @@ class OptConfig:
         self.learner = args.learner
         self.amls_lie_strategy = args.amls_lie_strategy
         self.amls_acq_func = args.amls_acq_func
+        self.amls_use_int_acq = args.use_int_acq
 
         self.model_path = args.model_path.strip()
         self.data_source = args.data_source.strip()
@@ -86,6 +85,7 @@ def sk_optimizer_from_config(opt_config, random_state):
             base_estimator=opt_config.learner,
             acq_optimizer='sampling',
             acq_func=opt_config.amls_acq_func,
+            use_int_acq=opt_config.amls_use_int_acq,
             acq_func_kwargs={'kappa':kappa},
             random_state=random_state,
             n_initial_points=n_init
@@ -182,15 +182,15 @@ def create_parser():
                         nargs='?', const=1, type=str, default='XGB',
                         choices=["XGB", "RF", "ET", "GBRT", "DUMMY", "GP"],
                         help='type of learner')
-
+    
+    parser.add_argument('--use-int-acq',type=bool, action='store',
+                        default=False, dest='use_int_acq')
+    
     parser.add_argument('--amls-lie-strategy', action='store',
                         default="cl_max", choices=["cl_min", "cl_mean", "cl_max"])
 
     parser.add_argument('--amls-acq-func', action='store', 
-                        default="gp_hedge", choices=["LCB", "EI", "PI","gp_hedge", "EIps","PIps"])
-
-    parser.add_argument('--use-int-acq',type=bool, action='store',
-                        default=False)
+                        default="gp_hedge", choices=["LCB", "EI", "PI","gp_hedge","EIps", "PIps"])
 
     parser.add_argument('--from-checkpoint', default=None,
                         help='path of checkpoint file from a previous run'

@@ -67,7 +67,7 @@ balsam app --name search --desc 'run AMLS: ET' --executable $SEARCH_APP_PATH
 {% elif method|upper == 'GP' -%}
 
 SEARCH_APP_PATH=$DEEPHYPER_TOP/search/amls.py
-ARGS="--max-evals {{ max_evals }} --benchmark {{ benchmark }} --num-workers $NUM_WORKERS --learner GP --amls-acq-func {{ acq }} --stage_in_destination={{ STAGE_IN_DIR }}"
+ARGS="--max-evals {{ max_evals }} --benchmark {{ benchmark }} --num-workers $NUM_WORKERS --learner GP --amls-acq-func {{ acq }}  --use-int-acq {{ useint }} --stage_in_destination={{ STAGE_IN_DIR }}"
 balsam app --name search --desc 'run AMLS: GP' --executable $SEARCH_APP_PATH
 
 {% elif method|upper == 'GBRT' -%}

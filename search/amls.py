@@ -230,8 +230,15 @@ def main(args):
             logger.info(f"current_max: {current_max}")
             #asen_code
             logger.info(f"Drawing {len(results)} points with strategy {optimizer.strategy}")
-            for batch in optimizer.ask(n_points=len(results)):
-                evaluator.add_eval_batch(batch, re_evaluate=cfg.repeat_evals)
+            if len(results)== 1:
+               optimizer.counter += 1
+               x = optimizer._optimizer.ask()
+               y = optimizer._get_lie()
+               optimizer.evals[optimizer._encode(x)] = y
+               evaluator.add_eval_batch([x], re_evaluate=cfg.repeat_evals)
+            else:
+               for batch in optimizer.ask(n_points=len(results)):
+                  evaluator.add_eval_batch(batch, re_evaluate=cfg.repeat_evals)
             chkpoint_counter += len(results)
             
 
