@@ -102,12 +102,20 @@ class BalsamEvaluator(evaluate.Evaluator):
                 l = line.split()
                 if len(l) == 3:
                     y = (float(l[1]),float(l[2]))
-                    if isnan(y[0]): y[0] = sys.float_info.max
+                    if isnan(y[0]): y = (1000.0, float(l[2]))
                 else:
                     y = float(l[1])
                     if isnan(y): y = sys.float_info.max    
                 break
-        return y
+        error = 1.0
+        for line in output.split('\n'):
+            if "ERRORRATE:" in line.upper():
+                #y = float(line.split()[-1])
+                l = line.split()
+                error = float(l[1])
+                if isnan(error): error = sys.float_info.max    
+                break               
+        return y,error
 
     def await_evals(self, to_read, timeout_sec=None, delay_sec=5):
         keys = [self._encode(x) for x in to_read]
@@ -195,8 +203,10 @@ class BalsamEvaluator(evaluate.Evaluator):
                 logger.info(f"Got data from {job.cute_id}")
                 key = self.id_key_map[job.job_id.hex]
                 x = self._decode(key)
-                y = self._read_eval_output(job)
+                y, error = self._read_eval_output(job)
                 self.evals[key] = y
+                self.jobids[key] = job.cute_id
+                self.error_rate[key] = error
                 if key not in self.elapsed_times:
                     self.elapsed_times[key] = time.time() - self.start_seconds
                 del self.pending_evals[key]

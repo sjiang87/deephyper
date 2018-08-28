@@ -30,6 +30,8 @@ class Evaluator:
         self.start_seconds = time.time()
         self.elapsed_times = {}
         self.transaction_context = self.DummyContext
+        self.jobids = OrderedDict()
+        self.error_rate = OrderedDict()
 
     def encode(self, x):
         return self._encode(x)
@@ -79,10 +81,13 @@ class Evaluator:
 
         for key in self.evals:
             x = self._decode(key)
+            
             resultDict = {name : value for (name,value)
                           in zip(self.params_list, x)}
             resultDict['objective'] = self.evals[key]
             resultDict['elapsed_sec'] = self.elapsed_times[key] if key in self.elapsed_times else 0.0
+            resultDict['error_rate'] = self.error_rate[key]
+            resultDict['Job Id'] = self.jobids[key]
             resultsList.append(resultDict)
 
         with open('results.csv', 'w') as fp:
