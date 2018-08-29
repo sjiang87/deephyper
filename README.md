@@ -150,4 +150,3 @@ Now just submit the script to the queue.
 qsub -A datascience -n 8 -t 60 -q debug-cache-quad /gpfs/mira-home/bob/deephyper/scripts/runs/mnistmlp.mnist_mlp.8.gp.EI.pg.sh
 ---
 
----
