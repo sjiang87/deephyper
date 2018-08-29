@@ -174,3 +174,37 @@ The variable "DATABASE_TOP" should have the location of the folder where Balsam 
 will stored in this folder. The variable "BALSAM_PATH" should set to the location where deephyper is installed. The variable "STAGE_IN_DIR" should be set to where want to stage your dataset for benchmarks.
 This variable can be left empty. The "DISABLE_SUBMIT" variable if set to True will not allow the runjob.py script to automatically qsub the script you generate. You have to manually submit 
 the script to the queque using qsub command.
+
+
+How to use the EIps and PIps acquistion functions in deephyper
+----------------------------------------------------------------------
+You can use the EI per second (EIps) and PI per second (PIps) acquistion function with deephyper. To use the EIps and PIps acquistion function, first make sure benchmark contains correct
+time in information. For example take tmnmistmlp benchmark in deephyper. Go to the benchmark folder and to the folder tmnistmlp folder. Inside this folder, you will find the file
+mnist_mlp.py. If you look at the bottom of the main function of this file, you will see the following
+
+```
+print('OUTPUT:', -score[1], end_time - start_time )
+```
+
+Here end_time - start_time is basically the total running time of the code. If you want to use EIps and PIps acquistion functions, please make you have similar print statement at the bottom
+of your file. It should print the string "OUTPUT" followed by the value of the objective function (in this case the test accuracy) and the time to compute the function. The evaluator in deephyper
+will read this string from the Balsam log and send it to the optimizer, so it is very important that the print statement in your benchmark has the exactly the same format otherwise it will
+crash.
+
+To generate the script for EIps and PIps do exactly as mentioned in the previous sections. Run the runjob.py file from scripts folder in deephyper.
+
+Suppose you want to run the tmnistmlp benchmark using the gaussian process as the surrogate model and use the EIps acquistion function on 8 nodes of debug-cache-quad queue. You should run
+run the following command
+
+```
+   python runjob.py theta_postgres gp tmnistmlp.mnist_mlp  EIps -q debug-cache-quad -n 8 -t 60 --use-int-acq False
+```
+or
+```
+   python runjob.py theta_postgres gp tmnistmlp.mnist_mlp  EIps -q debug-cache-quad -n 8 -t 60 
+```
+
+NOTE: The integrated acquistion function can't be used with EIps or PIps. Deephyper will fail if try to do so.
+
+In the above command tmnistmlp.mnist_mlp is the full name of the benchmark. The flags -q, -n, -t are for the name of the queue, number of nodes and total wall time. The EIps is acquistion
+function.
