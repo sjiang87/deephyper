@@ -83,7 +83,7 @@ def get_parser():
                                              ]
                        )
     parser.add_argument('acq', choices=["LCB", "EI", "PI","EIps","PIps","gp_hedge"], default ="gp_hedge")
-    parser.add_argument('--use-int-acq', type=bool, default = False)
+    parser.add_argument('--use-int-acq', default=False, type=lambda x: (str(x).lower() == 'true'))
     parser.add_argument('-q', required=True, dest='queue')
     parser.add_argument('-n', type=int, required=True, dest='nodes')
     parser.add_argument('-t', type=int, required=True, dest='time_minutes')
