@@ -2,12 +2,12 @@ from collections import OrderedDict
 class Problem():
     def __init__(self):
         space = OrderedDict()
-        space['epochs'] = (5, 50)
-        #space['epochs'] = (5,500)
+        #space['epochs'] = (5, 500)
         #bechmark specific parameters
+        space['epochs'] = (5, 40)
         #space['nhidden'] = (1, 100)
-        space['nhidden'] = (1,30)
-        space['nunits'] = (1, 1000)
+        space['nhidden'] = (1, 4)
+        space['nunits'] = (1, 300)
         #network parameters
         space['activation'] = ['relu', 'elu', 'selu', 'tanh']
         space['batch_size'] = (8, 1024)
