@@ -19,7 +19,7 @@ from deephyper.search import util
 logger = util.conf_logger('deephyper.search.amls')
 
 SERVICE_PERIOD = 2          # Delay (seconds) between main loop iterations
-CHECKPOINT_INTERVAL = 4    # How many jobs to complete between optimizer checkpoints
+CHECKPOINT_INTERVAL = 1    # How many jobs to complete between optimizer checkpoints
 SEED = 21278
 
 profile_timer = util.Timer()
