@@ -183,8 +183,7 @@ def create_parser():
                         choices=["XGB", "RF", "ET", "GBRT", "DUMMY", "GP"],
                         help='type of learner')
     
-    parser.add_argument('--use-int-acq',type=bool, action='store',
-                        default=False, dest='use_int_acq')
+    parser.add_argument('--use-int-acq',default=False, type=lambda x: (str(x).lower() == 'true') )
     
     parser.add_argument('--amls-lie-strategy', action='store',
                         default="cl_max", choices=["cl_min", "cl_mean", "cl_max"])
