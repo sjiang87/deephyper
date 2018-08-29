@@ -119,6 +119,8 @@ Note: Deephyper with integrated acquistion function uses a local version for sci
 
 How to run deephyper with the integrated acquistion function on theta
 ---------------------------------------------------------------------
+Note: These instructions are valid for theta.
+
 Once you have succesfully created the conda environment, we can create job script for running deephyper.
 
 First load the conda module on theta
@@ -150,3 +152,25 @@ Now just submit the script to the queue.
     qsub -A datascience -n 8 -t 60 -q debug-cache-quad /gpfs/mira-home/bob/deephyper/scripts/runs/mnistmlp.mnist_mlp.8.gp.EI.pg.sh
 ```
 
+How to edit the runjob.conf file
+----------------------------------------------------------------------
+
+The first time you run the runjob.py, it will create a runjob.conf file. You will edit its contents accordingly. This is how a runjob.conf file looks like
+
+```
+{
+    "DEEPHYPER_ENV_NAME":   "dl-hps",
+    "DEEPHYPER_TOP":        "/home/bob/deephyper",
+    "DATABASE_TOP":          "/projects/datascience/bob/deephyper/database",
+    "BALSAM_PATH":           "/home/bob/hpc-edge-service/balsam",
+    "STAGE_IN_DIR":          "",
+    "DISABLE_SUBMIT":        true
+}
+
+```
+
+The variable "DEEPHYPER_ENV_NAME" should be set the conda environment where deephyper is installed. The variable "DEEPHYPER_TOP" should have location of where deephyper is installed.
+The variable "DATABASE_TOP" should have the location of the folder where Balsam will creates its database. This folder can anywhere you like but keep in mind all results and data of the deephyper 
+will stored in this folder. The variable "BALSAM_PATH" should set to the location where deephyper is installed. The variable "STAGE_IN_DIR" should be set to where want to stage your dataset for benchmarks.
+This variable can be left empty. The "DISABLE_SUBMIT" variable if set to True will not allow the runjob.py script to automatically qsub the script you generate. You have to manually submit 
+the script to the queque using qsub command.
