@@ -134,11 +134,11 @@ Suppose you want to run the mnistmlp benchmark using the gaussian process as the
    python runjob.py theta_postgres gp mnistmlp.mnist_mlp  EI -q debug-cache-quad -n 8 -t 60 --use-int-acq True
 ```
 
-In the above command mnistmlp.mnist_mlp is the full name of the benchmark. The flags -q, -n, -t are for name of the queue, number of nodes and total wall time. The flag --use-int-acq is
-determine whether you want to use the integrated acquistion function or not. By default the integrated acquisition function is set to False.
+In the above command mnistmlp.mnist_mlp is the full name of the benchmark. The flags -q, -n, -t are for the name of the queue, number of nodes and total wall time. The flag --use-int-acq is
+determines whether you want to use the integrated acquistion function or not. By default the --use-int-acq is set to False.
 
 The first time you run this command, it won't any create any run script. Rather it will ask to you to edit a runjob.conf. We will see how to edit the runjob.conf in the next section.
-Once you have edited the runjob.conf correctly, rerun the above command. You will see the following something like this on your screen
+Once you have edited the runjob.conf correctly, rerun the above command. You will see something like this on your screen
 
 ```
    CREATED JOB IN /gpfs/mira-home/bob/deephyper/scripts/runs/mnistmlp.mnist_mlp.8.gp.EI.pg.sh
