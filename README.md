@@ -79,3 +79,132 @@ to the previous run's working directory.
     balsam job --name test --workflow b1_addition --app search --wall-minutes 20 --num-nodes 1 --ranks-per-node 1 --args '--max_evals=20 --restart-from    /path/to/previous/search/directory'
     balsam launcher --consume --max-ranks-per-node 4   
 ```
+
+How to install deephyper with the integrated acquistion function
+---------------------------------------------------------------------
+
+Create a new conda environment
+
+```
+     conda create -n dl-hps python=3.6
+```
+
+Then install Balsam within this new environment
+
+
+```
+    source activate dl-hps
+    git clone git@xgitlab.cels.anl.gov:turam/hpc-edge-service.git
+    cd hpc-edge-service
+    git checkout develop
+    pip install -e .
+```
+
+Once Balsam is installed, install the following dependencies within this conda environment
+
+```
+  conda install h5py
+  conda install scikit-learn
+  conda install pandas
+  conda install mpi4py
+  conda install -c conda-forge keras
+  conda install -c conda-forge xgboost
+  conda install -c astropy emcee
+  cd scikit-optimize
+  pip install -e.
+  conda install -c conda-forge xgboost 
+```
+
+Note: Deephyper with integrated acquistion function uses a local version for scikit-optimize. So, please make sure you've installed the local version of scikit-opt using pip install -e.
+
+How to run deephyper with the integrated acquistion function on theta
+---------------------------------------------------------------------
+Note: These instructions are valid for theta.
+
+Once you have succesfully created the conda environment, we can create job script for running deephyper.
+
+First load the conda module on theta
+
+```
+   module load miniconda-3.6/conda-4.4.10
+```
+
+Then go to scripts folder of deephyper. You should see a file runjob.py. 
+
+Suppose you want to run the mnistmlp benchmark using the gaussian process as the surrogate model and use the integrated acquisition function on 8 nodes of debug-cache-quad queue.
+```
+   python runjob.py theta_postgres gp mnistmlp.mnist_mlp  EI -q debug-cache-quad -n 8 -t 60 --use-int-acq True
+```
+
+In the above command mnistmlp.mnist_mlp is the full name of the benchmark. The flags -q, -n, -t are for the name of the queue, number of nodes and total wall time. The flag --use-int-acq is
+determines whether you want to use the integrated acquistion function or not. By default the --use-int-acq is set to False.
+
+The first time you run this command, it won't any create any run script. Rather it will ask to you to edit a runjob.conf. We will see how to edit the runjob.conf in the next section.
+Once you have edited the runjob.conf correctly, rerun the above command. You will see something like this on your screen
+
+```
+   CREATED JOB IN /gpfs/mira-home/bob/deephyper/scripts/runs/mnistmlp.mnist_mlp.8.gp.EI.pg.sh
+   Dry run -- change DISABLE_SUBMIT in runjob.conf to enable auto-submission
+```
+Now just submit the script to the queue.
+
+```
+    qsub -A datascience -n 8 -t 60 -q debug-cache-quad /gpfs/mira-home/bob/deephyper/scripts/runs/mnistmlp.mnist_mlp.8.gp.EI.pg.sh
+```
+
+How to edit the runjob.conf file
+----------------------------------------------------------------------
+
+The first time you run the runjob.py, it will create a runjob.conf file. You will edit its contents accordingly. This is how a runjob.conf file looks like
+
+```
+{
+    "DEEPHYPER_ENV_NAME":   "dl-hps",
+    "DEEPHYPER_TOP":        "/home/bob/deephyper",
+    "DATABASE_TOP":          "/projects/datascience/bob/deephyper/database",
+    "BALSAM_PATH":           "/home/bob/hpc-edge-service/balsam",
+    "STAGE_IN_DIR":          "",
+    "DISABLE_SUBMIT":        true
+}
+
+```
+
+The variable "DEEPHYPER_ENV_NAME" should be set the conda environment where deephyper is installed. The variable "DEEPHYPER_TOP" should have location of where deephyper is installed.
+The variable "DATABASE_TOP" should have the location of the folder where Balsam will creates its database. This folder can anywhere you like but keep in mind all results and data of the deephyper 
+will stored in this folder. The variable "BALSAM_PATH" should set to the location where deephyper is installed. The variable "STAGE_IN_DIR" should be set to where want to stage your dataset for benchmarks.
+This variable can be left empty. The "DISABLE_SUBMIT" variable if set to True will not allow the runjob.py script to automatically qsub the script you generate. You have to manually submit 
+the script to the queque using qsub command.
+
+
+How to use the EIps and PIps acquistion functions in deephyper
+----------------------------------------------------------------------
+You can use the EI per second (EIps) and PI per second (PIps) acquistion function with deephyper. To use the EIps and PIps acquistion function, first make sure benchmark contains correct
+time in information. For example take tmnmistmlp benchmark in deephyper. Go to the benchmark folder and to the folder tmnistmlp folder. Inside this folder, you will find the file
+mnist_mlp.py. If you look at the bottom of the main function of this file, you will see the following
+
+```
+print('OUTPUT:', -score[1], end_time - start_time )
+```
+
+Here end_time - start_time is basically the total running time of the code. If you want to use EIps and PIps acquistion functions, please make you have similar print statement at the bottom
+of your file. It should print the string "OUTPUT" followed by the value of the objective function (in this case the test accuracy) and the time to compute the function. The evaluator in deephyper
+will read this string from the Balsam log and send it to the optimizer, so it is very important that the print statement in your benchmark has the exactly the same format otherwise it will
+crash.
+
+To generate the script for EIps and PIps do exactly as mentioned in the previous sections. Run the runjob.py file from scripts folder in deephyper.
+
+Suppose you want to run the tmnistmlp benchmark using the gaussian process as the surrogate model and use the EIps acquistion function on 8 nodes of debug-cache-quad queue. You should run
+run the following command
+
+```
+   python runjob.py theta_postgres gp tmnistmlp.mnist_mlp  EIps -q debug-cache-quad -n 8 -t 60 --use-int-acq False
+```
+or
+```
+   python runjob.py theta_postgres gp tmnistmlp.mnist_mlp  EIps -q debug-cache-quad -n 8 -t 60 
+```
+
+NOTE: The integrated acquistion function can't be used with EIps or PIps. Deephyper will fail if try to do so.
+
+In the above command tmnistmlp.mnist_mlp is the full name of the benchmark. The flags -q, -n, -t are for the name of the queue, number of nodes and total wall time. The EIps is acquistion
+function.
