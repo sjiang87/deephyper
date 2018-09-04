@@ -63,6 +63,7 @@ def get_parser():
     parser.add_argument('benchmark', choices=['b1.addition_rnn',
                                              'b2.babi_memnn',
                                              'b3.babi_rnn', 'wrf.wrf', 'traffic.traffic',
+                                             'branin.branin',
                                              'candlep1b1.p1b1_baseline_keras2',
                                              'capsule.capsule',
                                              'cifar10cnn.cifar10_cnn',
