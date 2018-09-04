@@ -208,3 +208,98 @@ NOTE: The integrated acquistion function can't be used with EIps or PIps. Deephy
 
 In the above command tmnistmlp.mnist_mlp is the full name of the benchmark. The flags -q, -n, -t are for the name of the queue, number of nodes and total wall time. The EIps is acquistion
 function.
+
+Tuning the integrated acquistion function
+===================================================
+The main logic for computing the integrated acquistion function is inside the file acqisition.py of inside the skopt. It is implemented by the int_gaussian_acquisition() function. The int_gaussian_acquisition() intializes two objects. The first object logprob  belongs to the class GPMCMC and second
+object sampleremCees is an object of the class ensembleSampler. The class GPMCMC computes the log_probability of the distribution and actual sampling is done by the class  ensembleSampler.
+
+Class GPMCMC
+------------------------
+The class GPMCMC is use for computing the log probality and it has all the information about the kernel of the Gaussian process. To create an object of Class GPMCMC
+```
+logprob = GPMCMC(model=model,Xi=model.X_train_,Yi=model.y_train_,length_scale =1*np.ones(model.X_train_.shape[1]))
+```
+Here model is the base estimator used by scikit-opt, model.X_train and model.Y_train is data already seen by the base estimator and length_scale is length scale used by the Gaussian process.
+
+Class ensembleSampler
+--------------------------
+The class ensembleSampler has two functions, init and get_samples(). To create object of class  ensembleSampler first create a object logprob of class GPMCMC like shown in the previous section and then
+```
+sampleremCees = ensemblesampler(logprob, ndim=model.X_train_.shape[1], scale= np.std(model.y_train_+1e-4))
+
+```
+
+Here ndim is equal to the hyperparmeters to you are optimizing and scale is intial value of the scale you will use in the sampler for the scale of the kernel of the Gaussian process.
+
+To generate samples from the sampler
+```
+sampleemCees = sampleremCees.get_samples()
+```
+
+What to do if the integrated acquistion is not performing well
+-----------------------------------------------------------------
+There are few things you can try out to tune the performance of integrated acquistion function
+
+1. Change the number of walkers
+-------------------------------
+The get_samples() of ensembleSampler sets the number of walkers
+```
+nwalkers = 400
+```
+
+Currently the number of walkers is set to 400, you can change the value to any number you like. The sapmling can improve with a higher number of workers but more walkers also means more time for sampling.
+
+
+2. Change the intialization in the sampler
+----------------------------------------------
+The following lines in the get_samples() function of  ensembleSampler sets the intial values of the
+parameters for each walker in the sampler
+
+```
+pos_min = np.concatenate((np.array([self.initial_scale, self.initial_noise]), np.zeros(self.ndim)))
+pos_max = np.concatenate((np.array([self.initial_scale, self.initial_noise]), 2.0*np.ones(self.ndim)))
+psize = pos_max - pos_min
+pos = [pos_min + psize*np.random.rand(self.ndim+2) for i in range(nwalkers)]
+``` 
+The array pos contains the intials values of the parameters for each walker. Currently it is choosenrandomly with uniform distribution and ranges are being determined by pos_min and pos_max. Tuning the the intialization can improve the performance of the sampler.
+
+3. Change the prior distribution
+-----------------------------------------
+The function lnprior() inside __call__() of class GPMCMC sets the prior distribution
+
+```
+def lnprior(theta):
+    l = theta[2:]
+    s2_f = theta[0]
+    s2_n = theta[1]
+    if 0 < s2_f  and 0 < s2_n  and (l > 0).all() and (l < 2.0).all():
+        return np.log(np.log(1 + (0.1/s2_n)**2)) -0.5*(np.log(np.sqrt(s2_f))/1.0)**2 
+    return -np.inf
+```
+Currently it is set to uniform distribution for length scale parameters, Gaussian for the amplitude parameter and horse-shoe prior for the noise scale. Sometimes changing the prior can significantly change the performance of the integrated acquistion function.
+
+4. Change the number of samples used to do the integration
+---------------------------------------------------------------
+Currently, we're using only 500 samples for the integration. The quality of results can improve if more samples are being used.
+
+What to do if the sampling is too slow?
+----------------------------------------------------------------
+You can try the following to speed up the sampling. Depending on the benchmarks and number of hyperparmters sampling time can be something between 60s to 110s currently. The sampling depends on the number of walkers being used. More walkers will result in higher sampling.
+
+1. Change the number of processes in the multiprocessing pool
+----------------------------------------------------------------
+The emcee library uses multiprocessing pool for parallelizing the sampler. Currently, we are using 8processes in the pool
+```
+ with Pool(8) as pool:  
+      sampler = emcee.EnsembleSampler(nwalkers, self.ndim+2, lg_prob, pool=pool, args=[self.lnprob])
+      pos, prob, state = sampler.run_mcmc(pos, 200)
+      sampler.reset()
+      sampler.run_mcmc(pos, 300)
+```
+One can change the number of processes in the pool to any number they like ( for example to change to 10 just use Pool(10) instead of Pool(8)). Keep in my too many processes in the multiprocessing pool can slow down the sampling.
+
+2. Change the number of walkers
+------------------------------------
+Fewer walkers will reduce the sampling but it may also adversely affect the performace and quality of sampling.
+
