@@ -115,7 +115,7 @@ Once Balsam is installed, install the following dependencies within this conda e
   conda install -c conda-forge xgboost 
 ```
 
-Note: Deephyper with integrated acquistion function uses a local version for scikit-optimize. So, please make sure you've installed the local version of scikit-opt using pip install -e.
+Note: Deephyper with integrated acquistion function uses a local version for scikit-optimize. So, please make sure you've installed the local version of scikit-opt using pip install -e. The integrated acquistion function was developed using emcee version 2.2.1 which was the most current stable version when this code was written. It is not guarenteed to work with other versions of emcee.
 
 How to run deephyper with the integrated acquistion function on theta
 ---------------------------------------------------------------------
