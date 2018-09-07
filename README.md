@@ -121,7 +121,7 @@ How to run deephyper with the integrated acquistion function on theta
 ---------------------------------------------------------------------
 Note: These instructions are valid for theta.
 
-Once you have succesfully created the conda environment, we can create job script for running deephyper.
+Once you have succesfully created the conda environment, the following steps decribe how to a create job script for running deephyper.
 
 First load the conda module on theta
 
