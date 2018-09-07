@@ -30,7 +30,6 @@ Temporary Items
 __pycache__
 experiments/*
 db*
-scikit-optimize
 benchmarks/*/data/*.tar.gz
 benchmarks/*/data/*.npz
 xgboost/
