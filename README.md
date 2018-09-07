@@ -115,7 +115,7 @@ Once Balsam is installed, install the following dependencies within this conda e
   conda install -c conda-forge xgboost 
 ```
 
-Note: Deephyper with integrated acquistion function uses a local version for scikit-optimize. So, please make sure you've installed the local version of scikit-opt using pip install -e. The integrated acquistion function was developed using emcee version 2.2.1 which was the most current stable version when this code was written. It is not guarenteed to work with other versions of emcee.
+Note: Deephyper with integrated acquistion function uses a local version for scikit-optimize. So, please make sure you've installed the local version of scikit-opt using pip install -e. The integrated acquistion function was developed using emcee version 2.2.1 which was the most current stable version when this code was written. It is not guarenteed to work with other versions of emcee. Though the core components of the future versions will most likely be compatible with the older versions. Since, we are not using anything more than the core functions it will probably work fine with the future versions as well.  
 
 How to run deephyper with the integrated acquistion function on theta
 ---------------------------------------------------------------------
@@ -303,3 +303,27 @@ One can change the number of processes in the pool to any number they like ( for
 ------------------------------------
 Fewer walkers will reduce the sampling but it may also adversely affect the performace and quality of sampling.
 
+How to use MPI in emcee for sampling?
+------------------------------------
+Currently we are using multiprocessing pool for parallelizing the sampler because current version of deephyper doesn't allow MPI in the amls search. If that restriction is removed one can use MPI along with emcee.
+
+In emcee 2.2.1 one can use MPIPool from emcee
+```
+from emcee.utils import MPIPool
+```
+Now things will slightly change
+
+```
+pool = MPIPool()
+if not pool.is_master():
+    pool.wait()
+    sys.exit(0)
+sampler = emcee.EnsembleSampler(nwalkers, self.ndim+2, lg_prob, pool=pool, args=[self.lnprob])
+```
+More details on this can be found here http://dfm.io/emcee/current/user/advanced/.
+
+Deephyper uses emcee 2.2.1 which was the most recent stable version of emcee available then. Note that MPIPool of emcee will be removed from the future versions of emcee. Instead you can use the MPIPool of the schwimmbad library (https://github.com/adrn/schwimmbad). Please take a look at this document to see how to use schwimmbad with emcee https://emcee.readthedocs.io/en/latest/tutorials/parallel/. 
+
+
+
+```
