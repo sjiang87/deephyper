@@ -161,9 +161,9 @@ class Optimizer:
         self._optimizer.yi = []
         XX, YY = self._xy_from_dict()
         assert len(XX) == len(YY) == self.counter
-        #asen_code
+        
         logger.info(f"XX:{XX}, YY:{YY}")
-        #asen_code
+        
         self._optimizer.tell(XX, YY)
         assert len(self._optimizer.Xi) == len(self._optimizer.yi) == self.counter
 
@@ -199,11 +199,7 @@ def main(args):
     logger.info(f"Generating {cfg.num_workers} initial points...")
     XX = optimizer.ask_initial(n_points=cfg.num_workers)
     for x in XX: evaluator.add_eval(x, re_evaluate=cfg.repeat_evals)
-    #asen_code
-    start_time = time.time()
-    time_stamp = []
-    maximum_seen = []
-    #asen_code 
+     
     
     # MAIN LOOP
     for elapsed_str in timer:
@@ -217,18 +213,9 @@ def main(args):
             #profile_timer.start('tell')
             optimizer.tell(results)
             #profile_timer.end('tell')
-            #asen_code
             logger.info(f"Telling Finished")
-            val = optimizer._optimizer.yi[0]
-            logger.info(f"Val: {val}")
-            if isinstance(val, list):
-                current_max = -(min(optimizer._optimizer.yi, key = lambda x: x[0]))[0]
-            else:
-                current_max = -min(optimizer._optimizer.yi)                   
-            time_stamp.append(time.time()-start_time)
-            maximum_seen.append(current_max)
-            logger.info(f"current_max: {current_max}")
-            #asen_code
+           
+            
             logger.info(f"Drawing {len(results)} points with strategy {optimizer.strategy}")
             if len(results)== 1:
                optimizer.counter += 1
@@ -246,12 +233,6 @@ def main(args):
             save_checkpoint(cfg, optimizer, evaluator)
             chkpoint_counter = 0
         sys.stdout.flush()
-    #asen_code
-    with open("current_max.txt", "wb") as fp:   
-        pickle.dump(maximum_seen, fp)
-    with open("time_stamp.txt","wb") as fp:
-        pickle.dump(time_stamp,fp)
-    #asen_code        
     # EXIT
     logger.info('Hyperopt driver finishing')
     save_checkpoint(cfg, optimizer, evaluator)
