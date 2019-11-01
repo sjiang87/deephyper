@@ -59,3 +59,55 @@ class AutoKSearchSpace(KSearchSpace):
         self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
 
         return keras.Model(inputs=input_tensors, outputs=output_tensor)
+
+
+class AutoKSearchSpace_LSTM(KSearchSpace):
+    """An AutoKSearchSpace_LSTM represents a search space of LSTM neural networks.
+
+    Args:
+        input_shape (list(tuple(int))): list of shapes of all inputs.
+        output_shape (tuple(int)): shape of output.
+        regression (bool): if ``True`` the output will be a simple ``tf.keras.layers.Dense(output_shape[0])`` layer as the output layer. if ``False`` the output will be ``tf.keras.layers.Dense(output_shape[0], activation='softmax')``.
+
+    Raises:
+        InputShapeOfWrongType: [description]
+    """
+
+    def __init__(self, input_shape, output_shape, regression: bool, output_sequences: bool ,*args, **kwargs):
+        super().__init__(input_shape, output_shape)
+        self.regression = regression
+        self.output_sequences = output_sequences
+
+    def create_model(self):
+        """Create the tensors corresponding to the search_space.
+
+        Returns:
+            The output tensor.
+        """
+        if self.regression:
+            activation = None
+        else:
+            activation = 'softmax'
+
+        output_tensor = self.create_tensor_aux(self.graph, self.output_node)
+
+        # if len(output_tensor.get_shape()) > 2:
+        #     output_tensor = keras.layers.Flatten()(output_tensor)
+
+        if self.output_sequences:
+            output_tensor = keras.layers.LSTM(
+                self.output_shape[1], activation=activation, return_sequences=self.output_sequences,
+                kernel_initializer=tf.keras.initializers.glorot_uniform(seed=self.seed))(output_tensor)
+        else:
+            output_tensor = keras.layers.LSTM(
+                self.output_shape[0], activation=activation, return_sequences=self.output_sequences,
+                kernel_initializer=tf.keras.initializers.glorot_uniform(seed=self.seed))(output_tensor)
+
+        input_tensors = [inode._tensor for inode in self.input_nodes]
+
+        self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
+
+        return keras.Model(inputs=input_tensors, outputs=output_tensor)
+
+if __name__ == '__main__':
+    pass

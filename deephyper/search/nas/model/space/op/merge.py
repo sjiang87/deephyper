@@ -68,7 +68,6 @@ class Concatenate(Operation):
             out = values[0]
         return out
 
-
 class AddByPadding(Operation):
     """Add operation. If tensor are of different shapes a padding will be applied before adding them.
 
@@ -175,6 +174,61 @@ class AddByProjecting(Operation):
 
             for i in range(len(values)):
                 if values[i].get_shape()[1] != proj_size:
+                    values[i] = tf.keras.layers.Dense(
+                        units=proj_size,
+                        kernel_initializer=tf.keras.initializers.glorot_uniform(seed=seed)
+                        )(values[i])
+
+        # concatenation
+        if len(values) > 1:
+            out = keras.layers.Add()(values)
+            if self.activation is not None:
+                out = keras.layers.Activation(self.activation)(out)
+        else:
+            out = values[0]
+        return out
+
+class LSTM_AddByProjecting(Operation):
+    """Add operation. If tensor are of different shapes a padding will be applied before adding them.
+
+    Args:
+        search_space (KSearchSpace): [description]. Defaults to None.
+        activation ([type], optional): Activation function to apply after adding ('relu', tanh', 'sigmoid'...). Defaults to None.
+        stacked_nodes (list(Node)): nodes to add.
+        axis (int): axis to concatenate.
+    """
+
+    def __init__(self, search_space, stacked_nodes=None, activation=None):
+        self.search_space = search_space
+        self.node = None # current_node of the operation
+        self.stacked_nodes = stacked_nodes
+        self.activation = activation
+
+    def init(self, current_node):
+        self.node = current_node
+        if self.stacked_nodes is not None:
+            for n in self.stacked_nodes:
+                self.search_space.connect(n, self.node)
+
+    def __call__(self, values, seed=None, **kwargs):
+        values = values[:]
+        max_len_shp = max([len(x.get_shape()) for x in values])
+
+        # zeros padding
+        if len(values) > 1:
+
+            for i, v in enumerate(values):
+
+                if len(v.get_shape()) < max_len_shp:
+                    values[i] = keras.layers.Reshape(
+                        (*tuple(v.get_shape()[1:]),
+                            *tuple(1 for i in range(max_len_shp - len(v.get_shape())))
+                        ))(v)
+
+            proj_size = values[0].get_shape()[2]
+
+            for i in range(len(values)):
+                if values[i].get_shape()[2] != proj_size:
                     values[i] = tf.keras.layers.Dense(
                         units=proj_size,
                         kernel_initializer=tf.keras.initializers.glorot_uniform(seed=seed)
