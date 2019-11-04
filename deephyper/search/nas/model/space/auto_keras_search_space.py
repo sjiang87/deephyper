@@ -30,9 +30,10 @@ class AutoKSearchSpace(KSearchSpace):
         InputShapeOfWrongType: [description]
     """
 
-    def __init__(self, input_shape, output_shape, regression: bool, *args, **kwargs):
+    def __init__(self, input_shape, output_shape, fit_output:bool, regression: bool, *args, **kwargs):
         super().__init__(input_shape, output_shape)
         self.regression = regression
+        self.fit_output = fit_output
 
     def create_model(self):
         """Create the tensors corresponding to the search_space.
@@ -47,16 +48,21 @@ class AutoKSearchSpace(KSearchSpace):
 
         output_tensor = self.create_tensor_aux(self.graph, self.output_node)
 
-        if len(output_tensor.get_shape()) > 2:
-            output_tensor = keras.layers.Flatten()(output_tensor)
+        if self.fit_output:
+            if len(output_tensor.get_shape()) > 2:
+                output_tensor = keras.layers.Flatten()(output_tensor)
 
-        output_tensor = keras.layers.Dense(
-            self.output_shape[0], activation=activation,
-            kernel_initializer=tf.keras.initializers.glorot_uniform(seed=self.seed))(output_tensor)
+            output_tensor = keras.layers.Dense(
+                self.output_shape[0], activation=activation,
+                kernel_initializer=tf.keras.initializers.glorot_uniform(seed=self.seed))(output_tensor)
 
-        input_tensors = [inode._tensor for inode in self.input_nodes]
+            input_tensors = [inode._tensor for inode in self.input_nodes]
 
-        self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
+            self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
+        else:
+            input_tensors = [inode._tensor for inode in self.input_nodes]
+            self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
+
 
         return keras.Model(inputs=input_tensors, outputs=output_tensor)
 

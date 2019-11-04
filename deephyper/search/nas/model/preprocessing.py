@@ -13,6 +13,18 @@ def stdscaler():
     ])
     return preprocessor
 
+
+def minmaxscaler():
+    """Use StandardScaler.
+
+    Returns:
+        preprocessor:
+    """
+    preprocessor = Pipeline([
+        ('minmaxscaler', MinMaxScaler())
+    ])
+    return preprocessor
+
 def minmaxstdscaler():
     """Use MinMaxScaler then StandardScaler.
 
