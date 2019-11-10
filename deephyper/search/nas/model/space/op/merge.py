@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras.layers import Layer
 
 from . import Operation
 from .. import layers as deeplayers
@@ -66,6 +67,39 @@ class Concatenate(Operation):
             out = keras.layers.Concatenate(axis=-1)(values)
         else:
             out = values[0]
+        return out
+
+
+class Slice(Operation):
+    """Slice operation.
+
+    Args:
+        graph:
+        node (Node):
+        axis (int): axis to slice
+    """
+
+    def __init__(self, search_space, node, axis_start, axis_end):
+        self.search_space = search_space
+        self.node = node # Node to slice
+        self.axis_start = axis_start
+        self.axis_end = axis_end
+
+    def __call__(self, value, **kwargs):
+        output_dim = value[0].get_shape()[-1]
+        len_shp = max([len(x.get_shape()) for x in value])
+
+        if len_shp < 2:
+            raise RuntimeError(
+                'Need atleast 2D tensor for slice when a {len_shp}D tensor is passed!')
+
+        # concatenation
+        num_tensor = len(value)
+        if num_tensor == 1:
+            out = deeplayers.Slice_Layer(output_dim,self.axis_start,self.axis_end)(value[0])
+        else:
+            raise RuntimeError(
+                'Slice can be performed on only one tensor. You passed {num_tensor} values')
         return out
 
 class AddByPadding(Operation):
