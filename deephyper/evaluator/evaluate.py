@@ -142,6 +142,9 @@ class Evaluator:
         x = json.loads(key)
         if not isinstance(x, dict):
             raise ValueError(f'Expected dict, but got {type(x)}')
+        for key in x:
+            if isinstance(x[key], list):
+                x[key] = tuple(x[key])
         return x
 
     def add_eval(self, x):

@@ -16,9 +16,10 @@ class Optimizer:
                 problem,
                 num_workers,
                 learner='RF',
-                acq_func='gp_hedge',
+                acq_func='LCB',
                 liar_strategy='cl_max',
-                n_jobs=1, **kwargs):
+                n_jobs=1, min_initial_points=10,
+                **kwargs):
 
         assert learner in ["RF", "ET", "GBRT", "GP", "DUMMY"], f"Unknown scikit-optimize base_estimator: {learner}"
 
@@ -35,8 +36,10 @@ class Optimizer:
         # queue of remaining starting points
         self.starting_points = problem.starting_point
 
-        n_init = inf if learner == 'DUMMY' else max(
-            num_workers, len(self.starting_points))
+        if learner == 'DUMMY':
+            n_init = inf 
+        else: 
+            n_init = max(num_workers, len(self.starting_points), min_initial_points)
 
         self._optimizer = SkOptimizer(
             self.space.values(),

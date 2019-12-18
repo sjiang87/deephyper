@@ -16,6 +16,7 @@ from django.db import transaction
 logger = logging.getLogger(__name__)
 
 LAUNCHER_NODES = int(os.environ.get('BALSAM_LAUNCHER_NODES', 1))
+NODES_PER_EVAL = int(os.environ.get('DEEPHYPER_NODES_PER_EVAL', 1))
 
 
 class BalsamEvaluator(Evaluator):
@@ -32,10 +33,13 @@ class BalsamEvaluator(Evaluator):
     def __init__(self, run_function, cache_key=None, **kwargs):
         super().__init__(run_function, cache_key)
         self.id_key_map = {}
-        self.num_workers = max(1, LAUNCHER_NODES*self.WORKERS_PER_NODE - 2)
+        #self.num_workers = max(1, LAUNCHER_NODES*self.WORKERS_PER_NODE - 2)
+        self.nodes_per_eval = NODES_PER_EVAL
+        self.num_workers = int((LAUNCHER_NODES-1) // NODES_PER_EVAL)
         logger.info("Balsam Evaluator instantiated")
         logger.debug(f"LAUNCHER_NODES = {LAUNCHER_NODES}")
         logger.debug(f"WORKERS_PER_NODE = {self.WORKERS_PER_NODE}")
+        logger.debug(f"NODES_PER_EVAL = {NODES_PER_EVAL}")
         logger.debug(f"Total number of workers: {self.num_workers}")
         logger.info(f"Backend runs will use Python: {self.PYTHON_EXE}")
         self._init_app()
@@ -79,6 +83,7 @@ class BalsamEvaluator(Evaluator):
         task.name = f"task{self.counter}"
         wf = dag.current_job.workflow
         task.workflow = wf if wf is not None else self.appName
+        task.num_nodes = self.nodes_per_eval
         task.save()
         logger.debug(f"Created job {task.name}")
         logger.debug(f"Args: {task.args}")

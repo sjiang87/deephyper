@@ -62,12 +62,15 @@ class AMBS(Search):
                             help='Constant liar strategy'
                             )
         parser.add_argument('--acq-func',
-                            default="gp_hedge",
+                            default="LCB",
                             choices=["LCB", "EI", "PI", "gp_hedge"],
                             help='Acquisition function type'
                             )
         parser.add_argument('--n-jobs', type=int, default=1,
                             help="number of cores to use for the 'learner', if n_jobs=-1 then it will use all cores available.")
+        
+        parser.add_argument('--min-initial-points', type=int, default=10,
+                            help="Select at least this many points at random before using the acqusition function")
         return parser
 
     def main(self):
