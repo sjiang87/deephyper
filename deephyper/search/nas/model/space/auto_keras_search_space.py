@@ -20,24 +20,20 @@ from .op.op1d import Identity
 
 class AutoKSearchSpace(KSearchSpace):
     """An AutoKSearchSpace represents a search space of neural networks.
-
     Args:
         input_shape (list(tuple(int))): list of shapes of all inputs.
         output_shape (tuple(int)): shape of output.
         regression (bool): if ``True`` the output will be a simple ``tf.keras.layers.Dense(output_shape[0])`` layer as the output layer. if ``False`` the output will be ``tf.keras.layers.Dense(output_shape[0], activation='softmax')``.
-
     Raises:
         InputShapeOfWrongType: [description]
     """
 
-    def __init__(self, input_shape, output_shape, fit_output:bool, regression: bool, *args, **kwargs):
+    def __init__(self, input_shape, output_shape, regression: bool, *args, **kwargs):
         super().__init__(input_shape, output_shape)
         self.regression = regression
-        self.fit_output = fit_output
 
     def create_model(self):
         """Create the tensors corresponding to the search_space.
-
         Returns:
             The output tensor.
         """
@@ -48,21 +44,16 @@ class AutoKSearchSpace(KSearchSpace):
 
         output_tensor = self.create_tensor_aux(self.graph, self.output_node)
 
-        if self.fit_output:
-            if len(output_tensor.get_shape()) > 2:
-                output_tensor = keras.layers.Flatten()(output_tensor)
+        if len(output_tensor.get_shape()) > 2:
+            output_tensor = keras.layers.Flatten()(output_tensor)
 
-            output_tensor = keras.layers.Dense(
-                self.output_shape[0], activation=activation,
-                kernel_initializer=tf.keras.initializers.glorot_uniform(seed=self.seed))(output_tensor)
+        output_tensor = keras.layers.Dense(
+            self.output_shape[0], activation=activation,
+            kernel_initializer=tf.keras.initializers.glorot_uniform(seed=self.seed))(output_tensor)
 
-            input_tensors = [inode._tensor for inode in self.input_nodes]
+        input_tensors = [inode._tensor for inode in self.input_nodes]
 
-            self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
-        else:
-            input_tensors = [inode._tensor for inode in self.input_nodes]
-            self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
-
+        self._model = keras.Model(inputs=input_tensors, outputs=output_tensor)
 
         return keras.Model(inputs=input_tensors, outputs=output_tensor)
 
@@ -74,7 +65,7 @@ class AutoKSearchSpace_LSTM(KSearchSpace):
         input_shape (list(tuple(int))): list of shapes of all inputs.
         output_shape (tuple(int)): shape of output.
         regression (bool): if ``True`` the output will be a simple ``tf.keras.layers.Dense(output_shape[0])`` layer as the output layer. if ``False`` the output will be ``tf.keras.layers.Dense(output_shape[0], activation='softmax')``.
-
+        output_sequences (bool): if ``True``, the output operation of the LSTM will have return_sequences=True
     Raises:
         InputShapeOfWrongType: [description]
     """
@@ -101,6 +92,10 @@ class AutoKSearchSpace_LSTM(KSearchSpace):
         #     output_tensor = keras.layers.Flatten()(output_tensor)
 
         if self.output_sequences:
+            if len(self.output_shape) == 1:
+                print('Error: We are returning sequences - output shape is not sequence')
+                exit()
+
             output_tensor = keras.layers.LSTM(
                 self.output_shape[1], activation=activation, return_sequences=self.output_sequences,
                 kernel_initializer=tf.keras.initializers.glorot_uniform(seed=self.seed))(output_tensor)
