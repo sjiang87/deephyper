@@ -1,7 +1,7 @@
 from tensorflow import keras
 
-from .....core.exceptions import DeephyperRuntimeError
-from .op.basic import Operation
+from deephyper.core.exceptions import DeephyperRuntimeError
+from deephyper.search.nas.model.tensorflow1x.space.op.basic import Operation
 
 
 class Node:

@@ -10,7 +10,11 @@ from deephyper.core.exceptions.nas.space import (
     WrongOutputShape,
     WrongSequenceToSetOperations,
 )
-from deephyper.search.nas.model.space.node import ConstantNode, Node, VariableNode
+from deephyper.search.nas.model.tensorflow1x.space.node import (
+    ConstantNode,
+    Node,
+    VariableNode,
+)
 
 
 class NxSearchSpace:

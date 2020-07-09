@@ -1,12 +1,8 @@
 import tensorflow as tf
 
-# from ..space import KSearchSpace
-# from ..space.node import VariableNode
-# from ..space.op.op1d import Dense, Identity
-
-from deephyper.search.nas.model.space import KSearchSpace
-from deephyper.search.nas.model.space.node import VariableNode, ConstantNode
-from deephyper.search.nas.model.space.op.op1d import Dense, Identity
+from ..space import KSearchSpace
+from ..space.node import VariableNode, ConstantNode
+from ..space.op.op1d import Dense, Identity
 
 
 def create_search_space(
