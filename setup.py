@@ -45,6 +45,7 @@ REQUIRED = [
     "tqdm",
     "tensorflow>=1.13.1,<=1.15.2",
     "keras",
+    "torch==1.5.1",
     "deap",  # GA search
     # nas
     "gym",
