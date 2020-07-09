@@ -1,6 +1,8 @@
 from deephyper.problem import NaProblem
 from deephyper.benchmark.nas.linearRegMultiLoss.load_data import load_data
-from deephyper.search.nas.model.baseline.simple_bi_model import create_search_space
+from deephyper.search.nas.model.tensorflow1x.baseline.simple_bi_model import (
+    create_search_space,
+)
 
 from deephyper.search.nas.model.preprocessing import minmaxstdscaler
 

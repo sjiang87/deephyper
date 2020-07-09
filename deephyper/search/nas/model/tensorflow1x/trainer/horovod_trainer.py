@@ -9,10 +9,11 @@ import tensorflow as tf
 from tensorflow import keras
 import horovod.tensorflow.keras as hvd
 
-from .....core.logs.logging import JsonMessage as jm
-from .....core.exceptions import DeephyperRuntimeError
-from .... import util
-from .. import arch as a
+from deephyper.core.exceptions import DeephyperRuntimeError
+from deephyper.core.logs.logging import JsonMessage as jm
+from deephyper.search import util
+
+from ... import arch as a
 from .. import train_utils as U
 
 logger = util.conf_logger(__name__)

@@ -1,7 +1,8 @@
 import tensorflow as tf
 
-from deephyper.search.nas.model.space.node import VariableNode, MimeNode
-from deephyper.search.nas.model.space.op.op1d import Dense
+from deephyper.search.nas.model.tensorflow1x.space.node import VariableNode, MimeNode
+from deephyper.search.nas.model.tensorflow1x.space.op.op1d import Dense
+
 
 def test_mime_node():
     vnode = VariableNode()

@@ -14,7 +14,7 @@ class Ppo(ReinforcementLearningSearch):
 
     Args:
         problem (str): Module path to the Problem instance you want to use for the search (e.g. deephyper.benchmark.nas.linearReg.Problem).
-        run (str): Module path to the run function you want to use for the search (e.g. deephyper.search.nas.model.run.alpha.run).
+        run (str): Module path to the run function you want to use for the search (e.g. deephyper.search.nas.model.tensorflow1x.run.alpha.run).
         evaluator (str): value in ['balsam', 'ray', 'subprocess', 'processPool', 'threadPool']. Default to 'ray'.
         cliprange (float, optional): Clipping parameter of PPO. Defaults to 0.2.
         ent_coef (float, optional): Entropy parameter for PPO. Adding entropy helps to avoid convergence to a local optimum. To increase the entropy parameter is to increase exploration. Defaults to 0.01.

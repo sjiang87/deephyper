@@ -10,13 +10,13 @@ import tensorflow.keras.backend as K
 
 from deephyper.evaluator import Encoder
 from deephyper.search import util
-from deephyper.search.nas.model.run.util import (
+from deephyper.search.nas.model.tensorflow1x.run.util import (
     load_config,
     setup_data,
     setup_search_space,
     compute_objective,
 )
-from deephyper.search.nas.model.trainer.train_valid import TrainerTrainValid
+from deephyper.search.nas.model.tensorflow1x.trainer.train_valid import TrainerTrainValid
 from deephyper.contrib.callbacks.beholder import BeholderCB
 
 logger = util.conf_logger(__name__)

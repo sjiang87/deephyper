@@ -6,10 +6,10 @@ Subpackages
 
 .. toctree::
 
-   deephyper.search.nas.model.baseline
-   deephyper.search.nas.model.run
-   deephyper.search.nas.model.space
-   deephyper.search.nas.model.trainer
+   deephyper.search.nas.model.tensorflow1x.baseline
+   deephyper.search.nas.model.tensorflow1x.run
+   deephyper.search.nas.model.tensorflow1x.space
+   deephyper.search.nas.model.tensorflow1x.trainer
 
 Submodules
 ----------

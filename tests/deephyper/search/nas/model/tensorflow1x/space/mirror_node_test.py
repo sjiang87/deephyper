@@ -1,5 +1,6 @@
-from deephyper.search.nas.model.space.node import VariableNode, MirrorNode
-from deephyper.search.nas.model.space.op.op1d import Dense
+from deephyper.search.nas.model.tensorflow1x.space.node import VariableNode, MirrorNode
+from deephyper.search.nas.model.tensorflow1x.space.op.op1d import Dense
+
 
 def test_mirror_node():
     vnode = VariableNode()
