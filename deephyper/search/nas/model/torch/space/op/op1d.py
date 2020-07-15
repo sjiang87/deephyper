@@ -43,14 +43,14 @@ class Dense(Operation):
             len(inputs) == 1
         ), f"{type(self).__name__} as {len(inputs)} inputs when 1 is required."
 
-        if self._weights is None:  # reuse mechanism
+        if self._wT is None:  # reuse mechanism
             shape = list(inputs[0].shape)
             self._wT = nn.Parameter(torch.randn(self.units, shape[1]))
             self._b = nn.Parameter(torch.randn(self.units))
 
         out = F.linear(inputs[0], weight=self._wT, bias=self._b)
         if self.activation is not None:  # better for visualisation
-            out = self.activation(activation=self.activation)(out)
+            out = self.activation(out)
         return out
 
 

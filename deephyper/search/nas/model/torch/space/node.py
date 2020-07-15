@@ -1,5 +1,3 @@
-from tensorflow import keras
-
 from deephyper.core.exceptions import DeephyperRuntimeError
 from deephyper.search.nas.model.torch.space.op.basic import Operation
 
