@@ -9,7 +9,7 @@ CONTRIBUTING.md
 Dockerfile
 LINCENSE.md
 pyproject.toml
-pytest.in
+pytest.ini
 tox.ini
 .coveragerc
 .pre-commit-config.yaml
