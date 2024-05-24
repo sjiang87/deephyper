@@ -3,13 +3,13 @@ from collections import OrderedDict
 import tensorflow as tf
 
 optimizers_keras = OrderedDict()
-optimizers_keras["sgd"] = tf.keras.optimizers.SGD
-optimizers_keras["rmsprop"] = tf.keras.optimizers.RMSprop
-optimizers_keras["adagrad"] = tf.keras.optimizers.Adagrad
-optimizers_keras["adam"] = tf.keras.optimizers.Adam
-optimizers_keras["adadelta"] = tf.keras.optimizers.Adadelta
-optimizers_keras["adamax"] = tf.keras.optimizers.Adamax
-optimizers_keras["nadam"] = tf.keras.optimizers.Nadam
+optimizers_keras["sgd"] = tf.keras.optimizers.legacy.SGD
+optimizers_keras["rmsprop"] = tf.keras.optimizers.legacy.RMSprop
+optimizers_keras["adagrad"] = tf.keras.optimizers.legacy.Adagrad
+optimizers_keras["adam"] = tf.keras.optimizers.legacy.Adam
+optimizers_keras["adadelta"] = tf.keras.optimizers.legacy.Adadelta
+optimizers_keras["adamax"] = tf.keras.optimizers.legacy.Adamax
+optimizers_keras["nadam"] = tf.keras.optimizers.legacy.Nadam
 
 
 def selectOptimizer_keras(name):

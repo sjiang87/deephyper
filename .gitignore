@@ -1,4 +1,7 @@
 # Created by https://www.gitignore.io/api/osx
+*.submit
+*.log
+*.err
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -156,6 +159,7 @@ bin/
 *.tar.gz
 Data/
 *.csv
+*.pickle
 *.json
 *.swp
 logdir

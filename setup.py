@@ -100,6 +100,10 @@ EXTRAS = {
         "streamlit",
         "streamlit-aggrid",
         "tinydb",
+        "matplotlib==3.4.3",
+        "proplot==0.9.7",
+        "rdkit==2022.3.5",
+        "uncertainty-toolbox==0.1.1"
     ],
     "hvd": ["horovod>=0.21.3", "mpi4py>=3.0.0"],
 }
