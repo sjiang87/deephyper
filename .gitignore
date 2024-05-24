@@ -2,6 +2,18 @@
 *.submit
 *.log
 *.err
+docs/
+tests/
+install/
+CONTRIBUTING.md
+Dockerfile
+LINCENSE.md
+pyproject.toml
+pytest.in
+tox.ini
+.coveragerc
+.pre-commit-config.yaml
+.readthedocs.yaml
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
