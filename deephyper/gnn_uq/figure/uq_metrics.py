@@ -399,6 +399,6 @@ def plot_uq_metrics(DATA_DIR, RESULT_DIR, PLOT_DIR, COLOR, format="pdf"):
 
     fig.legend(loc="b", prop={"size": 12}, ncol=4)
 
-    out_file = os.path.join(PLOT_DIR, f"uq_metric.{format}")
+    out_file = os.path.join(PLOT_DIR, f"uq_metric_qm9.{format}")
 
     fig.save(out_file, bbox_inches="tight", dpi=600)
