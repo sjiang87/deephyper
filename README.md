@@ -30,10 +30,19 @@ $ pip install gdown
 $ cd autognnuq
 $ gdown "1O6uH1t2VVyzQJNfRXDGWtzWcxicOjSV5"
 $ gdown "1ujHNHOxwot7uYi9ZdWDDctaZ3hNKmVKU"
+$ gdown "1SRJZwWUhrVBK5s6ZBpJ2Z54doB-E0BAl"
+$ gdown "1Mz87Ovgt9aFrQW6D0Gnk8YDnR9iI1nPl"
+$ gdown "1QQlBp0whn-KfyC8pKrz9tUQ9Ny_mp7tS"
 $ tar -xzvf data.tar.gz
 $ tar -xzvf result.tar.gz
 $ tar -xzvf NAS.tar.gz
+$ tar -xzvf NAS_simple.tar.gz
+$ tar -xzvf post_result.tar.gz
+```
 
+```console
+$ gdown "1QQlBp0whn-KfyC8pKrz9tUQ9Ny_mp7tS"
+$ tar -xzvf post_model.tar.gz
 ```
 
 Your deephyper folder show look like this
@@ -55,7 +64,6 @@ deephyper/
 │ └── ... other_NAS_and_post_training_folders/
 ```
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deephyper/tutorials/blob/main/tutorials/colab/DeepHyper_101.ipynb)
 
 ## Quickstart
 

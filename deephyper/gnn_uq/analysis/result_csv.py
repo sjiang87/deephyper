@@ -10,21 +10,12 @@ def load_data_(RESULT_DIR):
     file = os.path.join(RESULT_DIR, "val_test_result.pickle")
     file_random = os.path.join(RESULT_DIR, "val_test_result_random.pickle")
     file_simple = os.path.join(RESULT_DIR, "val_test_result_simple.pickle")
-    file_simple_random = os.path.join(
-        RESULT_DIR, "val_test_result_random_simple.pickle"
-    )
     file_mc = os.path.join(RESULT_DIR, "val_test_result_mc_dropout.pickle")
-    # file_mc_random = os.path.join(RESULT_DIR, "val_test_result_mc_dropout_random.pickle")
-
     file_qm9 = os.path.join(RESULT_DIR, "val_test_result_qm9.pickle")
     file_qm9_random = os.path.join(RESULT_DIR, "val_test_result_qm9_random.pickle")
     file_qm9_simple = os.path.join(RESULT_DIR, "val_test_result_qm9_simple.pickle")
-    file_qm9_simple_random = os.path.join(
-        RESULT_DIR, "val_test_result_qm9_random_simple.pickle"
-    )
     file_qm9_mc = os.path.join(RESULT_DIR, "val_test_result_qm9_mc_dropout.pickle")
-    # file_qm9_mc_random = os.path.join(RESULT_DIR, "val_test_result_qm9_mc_dropout_random.pickle")
-
+ 
     with open(file, "rb") as handle:
         result = pickle.load(handle)
 
@@ -33,9 +24,6 @@ def load_data_(RESULT_DIR):
 
     with open(file_simple, "rb") as handle:
         result_simple = pickle.load(handle)
-
-    with open(file_simple_random, "rb") as handle:
-        result_simple_random = pickle.load(handle)
 
     with open(file_mc, "rb") as handle:
         result_mc = pickle.load(handle)
@@ -50,9 +38,6 @@ def load_data_(RESULT_DIR):
     with open(file_qm9_simple, "rb") as handle:
         result_qm9_simple = pickle.load(handle)
 
-    with open(file_qm9_simple_random, "rb") as handle:
-        result_qm9_simple_random = pickle.load(handle)
-
     with open(file_qm9_mc, "rb") as handle:
         result_qm9_mc = pickle.load(handle)
 
@@ -64,8 +49,6 @@ def load_data_(RESULT_DIR):
         result_qm9_random,
         result_simple,
         result_qm9_simple,
-        result_simple_random,
-        result_qm9_simple_random,
         result_mc,
         result_qm9_mc,
     )
@@ -211,8 +194,6 @@ def result_to_csv(RESULT_DIR):
         result_qm9_random,
         result_simple,
         result_qm9_simple,
-        result_simple_random,
-        result_qm9_simple_random,
         result_mc,
         result_qm9_mc,
     ) = load_data_(RESULT_DIR)
@@ -230,14 +211,6 @@ def result_to_csv(RESULT_DIR):
     out_file = os.path.join(RESULT_DIR, "metrics_simple.csv")
     df.to_csv(out_file, index=False)
 
-    df = result_to_csv_(result_simple_random, result_qm9_simple_random)
-    out_file = os.path.join(RESULT_DIR, "metrics_simple_random.csv")
-    df.to_csv(out_file, index=False)
-
     df = result_to_csv_(result_mc, result_qm9_mc)
     out_file = os.path.join(RESULT_DIR, "metrics_mc.csv")
     df.to_csv(out_file, index=False)
-    
-    # df = result_to_csv_(result_mc_random, result_qm9_mc_random)
-    # out_file = os.path.join(RESULT_DIR, "metrics_mc_random.csv")
-    # df.to_csv(out_file, index=False)
