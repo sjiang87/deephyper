@@ -60,12 +60,12 @@ $ conda activate agu
 $ python gen_result.py --ROOT_DIR "./autognnuq/" --RESULT_DIR "./autognnuq/result/" --PLOT_DIR "./autognnuq/fig/" --DATA_DIR "./autognnuq/data/"
 ```
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deephyper/tutorials/blob/main/tutorials/colab/DeepHyper_101.ipynb)
+<!-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deephyper/tutorials/blob/main/tutorials/colab/DeepHyper_101.ipynb)
 
-The black-box function named `run` is defined by taking an input job named `job` which contains the different variables to optimize `job.parameters`. Then the run-function is bound to an `Evaluator` in charge of distributing the computation of multiple evaluations. Finally, a Bayesian search named `CBO` is created and executed to find the values of config which **MAXIMIZE** the return value of `run(job)`.
+The black-box function named `run` is defined by taking an input job named `job` which contains the different variables to optimize `job.parameters`. Then the run-function is bound to an `Evaluator` in charge of distributing the computation of multiple evaluations. Finally, a Bayesian search named `CBO` is created and executed to find the values of config which **MAXIMIZE** the return value of `run(job)`. -->
 
 
-## How do I learn more?
+<!-- ## How do I learn more?
 
 * Documentation: <https://deephyper.readthedocs.io>
 
@@ -91,5 +91,5 @@ If you wish to cite the Software, please use the following:
 } 
 ```
 
-Find all our publications on the [Research & Publication](https://deephyper.github.io/papers) page of the Documentation.
+Find all our publications on the [Research & Publication](https://deephyper.github.io/papers) page of the Documentation. -->
 

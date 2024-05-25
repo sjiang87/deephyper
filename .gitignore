@@ -16,7 +16,8 @@ tox.ini
 .readthedocs.yaml
 .github/
 *.pyold
-autognnuq/
+*.pdf
+*.pickle
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -173,13 +174,11 @@ bin/
 *.dot
 *.tar.gz
 Data/
-*.csv
 *.pickle
 *.json
 *.swp
 logdir
 *.html
-*.png
 *.jpg
 *.h5
 *.gv
