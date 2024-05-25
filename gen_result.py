@@ -6,7 +6,6 @@ from deephyper.gnn_uq.analysis import (
     result_to_pickle,
     random_result_to_pickle,
     simple_result_to_pickle,
-    simple_random_result_to_pickle,
     mc_dropout_result_to_pickle,
     result_to_csv,
     comp_time
@@ -52,11 +51,6 @@ def main():
 
     simple_result_to_pickle(DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
     print("# Simple representation result saved to pickle files ...")
-
-    simple_random_result_to_pickle(
-        DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR
-    )
-    print("# Simple representation random result saved to pickle files ...")
 
     mc_dropout_result_to_pickle(
         DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR
