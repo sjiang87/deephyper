@@ -13,6 +13,7 @@ from deephyper.gnn_uq.figure import (
     plot_conf_curve,
     plot_tsne,
     plot_pc9_all,
+    plot_loss_curve,
 )
 
 
@@ -102,15 +103,37 @@ def main():
     #     format="png"
     # )
 
-    plot_pc9_all(
+    # print("# t-SNE plots done...")
+
+    # plot_pc9_all(
+    #     ROOT_DIR=ROOT_DIR,
+    #     RESULT_DIR=RESULT_DIR,
+    #     DATA_DIR=DATA_DIR,
+    #     LABEL=LABEL,
+    #     COLOR=COLOR,
+    #     PLOT_DIR=PLOT_DIR,
+    #     format="png",
+    # )
+
+    # print("# OOD PC9 plots done...")
+
+    plot_loss_curve(
         ROOT_DIR=ROOT_DIR,
         RESULT_DIR=RESULT_DIR,
-        DATA_DIR=DATA_DIR,
-        LABEL=LABEL,
         COLOR=COLOR,
         PLOT_DIR=PLOT_DIR,
         format="png",
     )
+    plot_loss_curve(
+        ROOT_DIR=ROOT_DIR,
+        RESULT_DIR=RESULT_DIR,
+        COLOR=COLOR,
+        PLOT_DIR=PLOT_DIR,
+        format="png",
+        if_simple=True,
+    )
+
+    print("# Loss curves done...")
 
 
 if __name__ == "__main__":

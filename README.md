@@ -27,7 +27,25 @@ $ pip install -e ".[default,analytics]"
 Train `AutoGNNUQ` neural architecture search
 ```console
 $ conda activate agu
-$ python train.py --ROOT_DIR "./autognnuq/" --SPLIT_TYPE "523" --seed 0 --dataset "delaney"
+$ python train.py --ROOT_DIR "./autognnuq/" --DATA_DIR "/scratch/gpfs/sj0161/autognnuq/data/" --SPLIT_TYPE "523" --seed 0 --dataset "delaney" --batch_size 128 --learning_rate 0.001 --epoch 30 --simple 1 --max_eval 1000
+```
+
+Train `AutoGNNUQ` for post-training
+```console
+$ conda activate agu
+$ python post_training.py --ROOT_DIR "/scratch/gpfs/sj0161/autognnuq/" --POST_DIR "./autognnuq/" --DATA_DIR "/scratch/gpfs/sj0161/autognnuq/data/" --SPLIT_TYPE "523" --seed 0 --dataset "delaney" --batch_size 128 --learning_rate 0.001 --epoch 1000 --mode "normal"
+```
+
+Train MC dropout
+```console
+$ conda activate agu
+$ python mc_dropout.py --ROOT_DIR "/scratch/gpfs/sj0161/autognnuq/" --POST_DIR "./autognnuq/" --DATA_DIR "/scratch/gpfs/sj0161/autognnuq/data/" --SPLIT_TYPE "523" --seed 0 --dataset "delaney" --batch_size 128 --learning_rate 0.001 --epoch 1000
+```
+
+OOD PC9
+```console
+$ conda activate agu
+$ python ood_pc9.py --ROOT_DIR "/scratch/gpfs/sj0161/autognnuq/" --POST_DIR "./autognnuq/" --DATA_DIR "/scratch/gpfs/sj0161/autognnuq/data/" --SPLIT_TYPE "811" --seed 0
 ```
 
 Generate all figures from `AutoGNNUQ` result files.

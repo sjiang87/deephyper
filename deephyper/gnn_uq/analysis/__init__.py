@@ -21,5 +21,5 @@ from .result_pickle import simple_result_to_pickle
 from .result_pickle import simple_random_result_to_pickle
 from .result_pickle import mc_dropout_result_to_pickle
 from .result_pickle import mc_dropout_random_result_to_pickle
-
 from .result_csv import result_to_csv
+from .comp_time import comp_time

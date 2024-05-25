@@ -1,16 +1,37 @@
 import os
 import pickle
+import pandas as pd
 import proplot as pplt
 import numpy as np
 from deephyper.gnn_uq.figure import sat
 
-def load_data_(RESULT_DIR):
-    with open(os.path.join(RESULT_DIR, "val_test_result.pickle"), "rb") as handle:
+
+def load_data_(RESULT_DIR, mode="normal"):
+
+    if mode == "normal":
+        result_file_1 = os.path.join(RESULT_DIR, "val_test_result.pickle")
+        result_file_2 = os.path.join(RESULT_DIR, "val_test_result_qm9.pickle")
+
+    elif mode == "mc":
+        result_file_1 = os.path.join(RESULT_DIR, "val_test_result_mc_dropout.pickle")
+        result_file_2 = os.path.join(
+            RESULT_DIR, "val_test_result_qm9_mc_dropout.pickle"
+        )
+
+    elif mode == "random":
+        result_file_1 = os.path.join(RESULT_DIR, "val_test_result_random.pickle")
+        result_file_2 = os.path.join(RESULT_DIR, "val_test_result_qm9_random.pickle")
+
+    elif mode == "simple":
+        result_file_1 = os.path.join(RESULT_DIR, "val_test_result_simple.pickle")
+        result_file_2 = os.path.join(RESULT_DIR, "val_test_result_qm9_simple.pickle")
+
+    with open(result_file_1, "rb") as handle:
         result = pickle.load(handle)
-    
-    with open(os.path.join(RESULT_DIR, "val_test_result_qm9.pickle"), "rb") as handle:
+
+    with open(result_file_2, "rb") as handle:
         result_qm9 = pickle.load(handle)
-        
+
     return result, result_qm9
 
 
@@ -54,125 +75,148 @@ def plot_conf_curve(RESULT_DIR, PLOT_DIR, COLOR, format="pdf"):
         r"QM9 $H$" + "\n" + "[kcal/mol]",
         r"QM9 $G$" + "\n" + "[kcal/mol]",
     ]
-    
-    result, result_qm9 = load_data_(RESULT_DIR=RESULT_DIR)
 
-    fig, ax = pplt.subplots(refheight=2, refwidth=2.5, ncols=4, nrows=4, sharey=False)
+    for data_mode in ["normal", "simple", "mc", "random"]:
+        result, result_qm9 = load_data_(RESULT_DIR=RESULT_DIR, mode=data_mode)
 
-    for i in range(16):
-        err_ale = np.zeros((8, 101))
-        err_epi = np.zeros((8, 101))
-        err_tot = np.zeros((8, 101))
-        oracle = np.zeros((8, 101))
+        csv_out = []
 
-        if i == 0:
-            dataset = "lipo"
-        elif i == 1:
-            dataset = "delaney"
-        elif i == 2:
-            dataset = "freesolv"
-        elif i == 3:
-            dataset = "qm7"
-        else:
-            dataset = "qm9"
+        fig, ax = pplt.subplots(
+            refheight=2, refwidth=2.5, ncols=4, nrows=4, sharey=False
+        )
 
-        if i >= 3:
-            mode = "mae"
-            ylabel = "MAE"
-        else:
-            mode = "rmse"
-            ylabel = "RMSE"
+        for i in range(16):
+            err_ale = np.zeros((8, 101))
+            err_epi = np.zeros((8, 101))
+            err_tot = np.zeros((8, 101))
+            oracle = np.zeros((8, 101))
 
-        for seed in range(8):
-            if dataset == "qm9":
-                split = "811"
-
-                y_true, y_pred, y_epis, y_alea, v_true, v_pred, v_epis, v_alea = result_qm9[
-                    dataset, split, seed
-                ]
-                y_true = np.copy(y_true)[..., i - 4]
-                y_pred = np.copy(y_pred)[..., i - 4]
-                y_alea = np.copy(y_alea)[..., i - 4]
-                y_epis = np.copy(y_epis)[..., i - 4]
-
-                if i in [6, 7, 8, 10]:
-                    y_true = y_true * 27.2114
-                    y_pred = y_pred * 27.2114
-                    y_alea = y_alea * (27.2114**2)
-                    y_epis = y_epis * (27.2114**2)
-
+            if i == 0:
+                dataset = "lipo"
+            elif i == 1:
+                dataset = "delaney"
+            elif i == 2:
+                dataset = "freesolv"
+            elif i == 3:
+                dataset = "qm7"
             else:
-                split = "523"
+                dataset = "qm9"
 
-                y_true, y_pred, y_epis, y_alea, v_true, v_pred, v_epis, v_alea = result[
-                    dataset, split, seed
-                ]
+            if i >= 3:
+                mode = "mae"
+                ylabel = "MAE"
+            else:
+                mode = "rmse"
+                ylabel = "RMSE"
 
-            err = np.abs(y_true - y_pred)
+            for seed in range(8):
+                if dataset == "qm9":
+                    split = "811"
 
-            p, oracle[seed] = conf_curve_(err, err, mode=mode)
-            _, err_ale[seed] = conf_curve_(err, y_alea**0.5, mode=mode)
-            _, err_epi[seed] = conf_curve_(err, y_epis**0.5, mode=mode)
-            _, err_tot[seed] = conf_curve_(err, (y_alea + y_epis) ** 0.5, mode=mode)
+                    y_true, y_pred, y_epis, y_alea, v_true, v_pred, v_epis, v_alea = (
+                        result_qm9[dataset, split, seed]
+                    )
+                    y_true = np.copy(y_true)[..., i - 4]
+                    y_pred = np.copy(y_pred)[..., i - 4]
+                    y_alea = np.copy(y_alea)[..., i - 4]
+                    y_epis = np.copy(y_epis)[..., i - 4]
 
-        ax[i].plot(p, err_tot.mean(axis=0), label="Total", c=COLOR[0])
-        ax[i].fill_between(
-            p,
-            err_tot.mean(axis=0) - err_tot.std(axis=0),
-            err_tot.mean(axis=0) + err_tot.std(axis=0),
-            c=sat(COLOR[0], 0.85),
+                    if i in [6, 7, 8, 10]:
+                        y_true = y_true * 27.2114
+                        y_pred = y_pred * 27.2114
+                        y_alea = y_alea * (27.2114**2)
+                        y_epis = y_epis * (27.2114**2)
+
+                else:
+                    split = "523"
+
+                    y_true, y_pred, y_epis, y_alea, v_true, v_pred, v_epis, v_alea = (
+                        result[dataset, split, seed]
+                    )
+
+                err = np.abs(y_true - y_pred)
+
+                p, oracle[seed] = conf_curve_(err, err, mode=mode)
+                _, err_ale[seed] = conf_curve_(err, y_alea**0.5, mode=mode)
+                _, err_epi[seed] = conf_curve_(err, y_epis**0.5, mode=mode)
+                _, err_tot[seed] = conf_curve_(err, (y_alea + y_epis) ** 0.5, mode=mode)
+
+            ax[i].plot(p, err_tot.mean(axis=0), label="Total", c=COLOR[0])
+            ax[i].fill_between(
+                p,
+                err_tot.mean(axis=0) - err_tot.std(axis=0),
+                err_tot.mean(axis=0) + err_tot.std(axis=0),
+                c=sat(COLOR[0], 0.85),
+            )
+
+            ax[i].plot(p, err_ale.mean(axis=0), label="Aleatoric", c=COLOR[1])
+            ax[i].fill_between(
+                p,
+                err_ale.mean(axis=0) - err_ale.std(axis=0),
+                err_ale.mean(axis=0) + err_ale.std(axis=0),
+                c=sat(COLOR[1], 0.85),
+            )
+
+            ax[i].plot(p, err_epi.mean(axis=0), label="Epistemic", c=COLOR[2])
+            ax[i].fill_between(
+                p,
+                err_epi.mean(axis=0) - err_epi.std(axis=0),
+                err_epi.mean(axis=0) + err_epi.std(axis=0),
+                c=sat(COLOR[2], 0.85),
+            )
+
+            ax[i].plot(p, oracle.mean(axis=0), "k--", label="Oracle")
+
+            ax[i].fill_between(
+                p,
+                oracle.mean(axis=0) - oracle.std(axis=0),
+                oracle.mean(axis=0) + oracle.std(axis=0),
+                c=sat("#000000", 0.85),
+            )
+
+            ax[i].text(
+                0.02,
+                0.02,
+                LABELS[i],
+                ha="left",
+                va="bottom",
+                transform=ax[i].transAxes,
+                fontsize=10,
+                color="k",
+                weight="bold",
+            )
+
+            ax[i].format(
+                xlabel=r"Confidence Percentile",
+                ylabel=ylabel,
+                xlabelsize=12,
+                ylabelsize=12,
+                xticklabelsize=10,
+                yticklabelsize=10,
+                xlim=[0, 100],
+            )
+
+            if i == 3:
+                ax[i].legend(ncol=1, loc="upper right", prop={"size": 11})
+
+            # print(
+            #     f"{LABELS[i].split('\n')[0]}: {(err_tot-oracle).sum(axis=1).mean():0.2f} ({(err_tot-oracle).sum(axis=1).std():0.2f})"
+            # )
+
+            csv_out.append([LABELS[i].split('\n')[0], (err_tot-oracle).sum(axis=1).mean(), (err_tot-oracle).sum(axis=1).std()])
+
+        df = pd.DataFrame(
+            csv_out,
+            columns=[
+                "dataset",
+                "auco_mean",
+                "auco_std"
+            ],
         )
 
-        ax[i].plot(p, err_ale.mean(axis=0), label="Aleatoric", c=COLOR[1])
-        ax[i].fill_between(
-            p,
-            err_ale.mean(axis=0) - err_ale.std(axis=0),
-            err_ale.mean(axis=0) + err_ale.std(axis=0),
-            c=sat(COLOR[1], 0.85),
-        )
+        out_csv_file = os.path.join(RESULT_DIR, f"conf_curve_auco_{data_mode}.csv")
+        df.to_csv(out_csv_file, index=False)
 
-        ax[i].plot(p, err_epi.mean(axis=0), label="Epistemic", c=COLOR[2])
-        ax[i].fill_between(
-            p,
-            err_epi.mean(axis=0) - err_epi.std(axis=0),
-            err_epi.mean(axis=0) + err_epi.std(axis=0),
-            c=sat(COLOR[2], 0.85),
-        )
+        out_file = os.path.join(PLOT_DIR, f"conf_curve_{data_mode}.{format}")
 
-        ax[i].plot(p, oracle.mean(axis=0), "k--", label="Oracle")
-
-        ax[i].fill_between(
-            p,
-            oracle.mean(axis=0) - oracle.std(axis=0),
-            oracle.mean(axis=0) + oracle.std(axis=0),
-            c=sat("#000000", 0.85),
-        )
-
-        ax[i].text(
-            0.02,
-            0.02,
-            LABELS[i],
-            ha="left",
-            va="bottom",
-            transform=ax[i].transAxes,
-            fontsize=10,
-            color="k",
-            weight="bold",
-        )
-
-        ax[i].format(
-            xlabel=r"Confidence Percentile",
-            ylabel=ylabel,
-            xlabelsize=12,
-            ylabelsize=12,
-            xticklabelsize=10,
-            yticklabelsize=10,
-            xlim=[0, 100],
-        )
-
-        if i == 3:
-            ax[i].legend(ncol=1, loc="upper right", prop={"size": 11})
-
-    out_file = os.path.join(PLOT_DIR, f"conf_curve.{format}")
-
-    fig.save(out_file, bbox_inches="tight", dpi=600)
+        fig.save(out_file, bbox_inches="tight", dpi=600)

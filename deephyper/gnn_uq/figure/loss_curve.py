@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import proplot as pplt
 from scipy.signal import savgol_filter
-from deephyper.gnn_uq.figure import sat
 
 
 def load_data_(ROOT_DIR, RESULT_DIR, if_simple=False):
@@ -100,20 +99,19 @@ def load_data_(ROOT_DIR, RESULT_DIR, if_simple=False):
     return loss_dict
 
 
-def plot_loss_curve(ROOT_DIR, RESULT_DIR, COLOR, PLOT_DIR, if_simple=False, format="pdf"):
-    loss_dict = load_data_(ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR, if_simple=if_simple)
+def plot_loss_curve(
+    ROOT_DIR, RESULT_DIR, COLOR, PLOT_DIR, if_simple=False, format="pdf"
+):
+    loss_dict = load_data_(
+        ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR, if_simple=if_simple
+    )
 
     fig, ax = pplt.subplots(
-        nrows=2,
-        ncols=3,
-        refwidth=2,
-        refheight=2,
-        sharey=False,
-        wspace=5
+        nrows=2, ncols=3, refwidth=2, refheight=2, sharey=False, wspace=5
     )
 
     keys = np.array(list(loss_dict.keys()))
-    
+
     keys = keys[[1, 0, 2, 3, 4]]
 
     params = [
@@ -124,42 +122,40 @@ def plot_loss_curve(ROOT_DIR, RESULT_DIR, COLOR, PLOT_DIR, if_simple=False, form
         ("QM9", "811"),
     ]
 
+    csv_out = []
+
     for i, key in enumerate(keys):
         loss, val_loss = loss_dict[key]
-        
+
         a = []
-        
+
         for j in range(len(val_loss)):
             if np.argmin(val_loss[j]) <= 29:
                 a.append(1)
             else:
-                a.append((np.abs(val_loss[j, 0] - np.min(val_loss[j, :30]))) / np.abs((val_loss[j, 0] - val_loss[j].min())))
+                a.append(
+                    (np.abs(val_loss[j, 0] - np.min(val_loss[j, :30])))
+                    / np.abs((val_loss[j, 0] - val_loss[j].min()))
+                )
 
         a = np.array(a)
         b = val_loss.min(axis=1)
         c = val_loss[:, 29]
-        
-        print(
-            f"{key} converge ratio: {a.mean():0.2f} ({a.std():0.2f}) 30 epoch: {b.mean():0.2f} ({b.std():0.2f}) min: {c.mean():0.2f} ({c.std():0.2f})"
-        )
+
+        # print(
+        #     f"{key} converge ratio: {a.mean():0.2f} ({a.std():0.2f}) 30 epoch: {b.mean():0.2f} ({b.std():0.2f}) min: {c.mean():0.2f} ({c.std():0.2f})"
+        # )
+
+        csv_out.append([key, a.mean(), a.std(), b.mean(), b.std(), c.mean(), c.std()])
 
         val_loss_mean = val_loss.argmin(axis=1).mean()
 
         kernel = np.ones(50) / 50
 
-        loss_smooth = savgol_filter(
-            loss.mean(axis=0), 11, 3
-        )  # np.convolve(loss.mean(axis=0), kernel, mode="valid")
-        val_loss_smooth = savgol_filter(
-            val_loss.mean(axis=0), 11, 3
-        )  # np.convolve(val_loss.mean(axis=0), kernel, mode="valid")
-
-        loss_smooth_std = savgol_filter(
-            loss.std(axis=0), 11, 3
-        ) # np.convolve(loss.std(axis=0), kernel, mode="valid")
-        val_loss_smooth_std = savgol_filter(
-            val_loss.std(axis=0), 11, 3
-        ) # np.convolve(val_loss.std(axis=0), kernel, mode="valid")
+        loss_smooth = savgol_filter(loss.mean(axis=0), 11, 3)
+        val_loss_smooth = savgol_filter(val_loss.mean(axis=0), 11, 3)
+        loss_smooth_std = savgol_filter(loss.std(axis=0), 11, 3)
+        val_loss_smooth_std = savgol_filter(val_loss.std(axis=0), 11, 3)
 
         xx = np.arange(len(loss_smooth))
 
@@ -175,7 +171,7 @@ def plot_loss_curve(ROOT_DIR, RESULT_DIR, COLOR, PLOT_DIR, if_simple=False, form
         )
 
         ax[i].plot(xx, val_loss_smooth, c=COLOR[1], label="Validation")
-        # ax[i].vlines(val_loss_mean, vmax, c=COLOR[3])
+
         ax[i].fill_between(
             xx,
             val_loss_smooth - val_loss_smooth_std,
@@ -186,11 +182,11 @@ def plot_loss_curve(ROOT_DIR, RESULT_DIR, COLOR, PLOT_DIR, if_simple=False, form
 
         if i == 4:
             ax[i].legend(loc="upper right", prop={"size": 12}, ncol=1)
-            
+
         if i < 4:
-            ylim=[-2, 6]
+            ylim = [-2, 6]
         else:
-            ylim=[None, None]
+            ylim = [None, None]
 
         ax[i].format(
             xlabel="Epoch",
@@ -203,7 +199,7 @@ def plot_loss_curve(ROOT_DIR, RESULT_DIR, COLOR, PLOT_DIR, if_simple=False, form
             ylabelsize=15,
             xticks=[0, 250, 500, 750, 1000],
         )
-        
+
         if params[i][0] == "Delaney":
             txt = "ESOL"
         else:
@@ -223,9 +219,27 @@ def plot_loss_curve(ROOT_DIR, RESULT_DIR, COLOR, PLOT_DIR, if_simple=False, form
 
     ax[-1].axis("off")
 
+    df = pd.DataFrame(
+        csv_out,
+        columns=[
+            "dataset",
+            "conv_ratio_mean",
+            "conv_ratio_std",
+            "epoch_30_mean",
+            "epoch_30_std",
+            "min_loss_mean",
+            "min_loss_std",
+        ],
+    )
+
     if if_simple:
         out_file = os.path.join(PLOT_DIR, f"loss_curve_simple.{format}")
+        out_csv_file = os.path.join(RESULT_DIR, "loss_stats_simple.csv")
+
     else:
         out_file = os.path.join(PLOT_DIR, f"loss_curve.{format}")
+        out_csv_file = os.path.join(RESULT_DIR, "loss_stats.csv")
+
+    df.to_csv(out_csv_file, index=False)
 
     fig.save(out_file, bbox_inches="tight", dpi=600)

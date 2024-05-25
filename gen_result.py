@@ -9,6 +9,7 @@ from deephyper.gnn_uq.analysis import (
     simple_random_result_to_pickle,
     mc_dropout_result_to_pickle,
     result_to_csv,
+    comp_time
 )
 
 
@@ -43,30 +44,33 @@ def main():
     print(f"# Your RESULT_DIR: {RESULT_DIR}")
     print(f"# Your DATA_DIR: {DATA_DIR}\n")
 
-    result_to_pickle(DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
-    print("# Result saved to pickle files ...")
+    # result_to_pickle(DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
+    # print("# Result saved to pickle files ...")
 
-    random_result_to_pickle(DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
-    print("# Random result saved to pickle files ...")
+    # random_result_to_pickle(DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
+    # print("# Random result saved to pickle files ...")
 
-    simple_result_to_pickle(DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
-    print("# Simple representation result saved to pickle files ...")
+    # simple_result_to_pickle(DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
+    # print("# Simple representation result saved to pickle files ...")
 
-    simple_random_result_to_pickle(
-        DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR
-    )
-    print("# Simple representation random result saved to pickle files ...")
+    # simple_random_result_to_pickle(
+    #     DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR
+    # )
+    # print("# Simple representation random result saved to pickle files ...")
 
-    mc_dropout_result_to_pickle(
-        DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR
-    )
-    print("# MC dropout result saved to pickle files ...")
+    # mc_dropout_result_to_pickle(
+    #     DATA_DIR=DATA_DIR, ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR
+    # )
+    # print("# MC dropout result saved to pickle files ...")
 
-    result_to_csv(RESULT_DIR=RESULT_DIR)
-    print("# Metrics saved to csv files ...")
+    # result_to_csv(RESULT_DIR=RESULT_DIR)
+    # print("# Metrics saved to csv files ...")
 
-    calculate_conf_calib(RESULT_DIR=RESULT_DIR)
-    print("# Uncertainty calibration done ...")
+    # calculate_conf_calib(RESULT_DIR=RESULT_DIR)
+    # print("# Uncertainty calibration done ...")
+
+    comp_time(ROOT_DIR=ROOT_DIR, RESULT_DIR=RESULT_DIR)
+    print("# Time analysis done ...")
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from deephyper.gnn_uq.data_utils import split_data, get_data
 
 
 def load_data(
-    DATA_DIR="/scratch/gpfs/sj0161/autognnuq/data/",
+    DATA_DIR="./autognnuq/data/",
     dataset="qm7",
     split_type="random",
     seed=0,

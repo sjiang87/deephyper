@@ -10,7 +10,7 @@ from deephyper.nas.run import run_base_trainer
 from deephyper.problem import NaProblem
 from deephyper.search.nas import RegularizedEvolution
 from deephyper.gnn_uq.gnn_model import RegressionUQSpace, nll
-from deephyper.gnn_uq.load_data import load_data
+from deephyper.gnn_uq.load_data import load_data, load_data_simple
 
 
 def get_dir(default_path, provided_path):
@@ -25,16 +25,6 @@ def get_dir(default_path, provided_path):
 
 
 def get_evaluator(run_function):
-    """
-    Creates and returns an Evaluator object for running the provided `run_function`.
-
-    Args:
-        run_function (callable): The function to be executed by the Evaluator.
-
-    Returns:
-        Evaluator: An Evaluator object configured based on the availability of GPU resources.
-
-    """
     method_kwargs = {
         "num_cpus": 1,
         "num_cpus_per_task": 1,
@@ -57,53 +47,95 @@ def get_evaluator(run_function):
     return evaluator
 
 
-def main(seed, dataset, SPLIT_TYPE):
-    """
-    Main function for executing the Neural Architecture Search process.
+def main():
+    parser = argparse.ArgumentParser(description="Neural architecture search.")
 
-    Args:
-        seed (int): Seed for random number generation.
-        dataset (str): Name of the dataset.
-        SPLIT_TYPE (str): Type of data split to be used.
-
-    """
-    parser = argparse.ArgumentParser(description="Generate all figure.")
-
-    parser.add_argument("--ROOT_DIR", type=str, help="Root directory")
-    parser.add_argument("--SPLIT_TYPE", type=str, help="Split ratio 811 or 523")
-    parser.add_argument("--seed", type=int, help="Random seed data split")
-    parser.add_argument("--dataset", type=str, help="Dataset [lipo, delaney, qm7, freesolv, qm9]")
+    parser.add_argument(
+        "--ROOT_DIR", type=str, help="Root directory", default="./autognnuq/"
+    )
+    parser.add_argument(
+        "--DATA_DIR", type=str, help="Data directory", default="./autognnuq/data/"
+    )
+    parser.add_argument(
+        "--SPLIT_TYPE", type=str, help="Split ratio 811 or 523", default="523"
+    )
+    parser.add_argument("--seed", type=int, help="Random seed data split", default=0)
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        help="lipo, delaney, qm7, freesolv, qm9",
+        default="delaney",
+    )
+    parser.add_argument("--batch_size", type=int, help="Batch size", default=128)
+    parser.add_argument("--learning_rate", type=float, help="Learning rate", default=1e-3)
+    parser.add_argument("--epoch", type=int, help="Number of search epochs", default=30)
+    parser.add_argument(
+        "--simple", type=int, help="Simple representation 1 or not 0", default=1
+    )
+    parser.add_argument(
+        "--max_eval",
+        type=int,
+        help="Maximum number of architecture evaluations",
+        default=1000,
+    )
 
     args = parser.parse_args()
     ROOT_DIR = get_dir("./autognnuq/", args.ROOT_DIR)
+    DATA_DIR = get_dir("./autognnuq/data/", args.DATA_DIR)
+
     SPLIT_TYPE = args.SPLIT_TYPE
     seed = int(args.seed)
     dataset = args.dataset
+    bs = int(args.batch_size)
+    lr = float(args.learning_rate)
+    epoch = int(args.epoch)
+    simple = int(args.simple)
+    max_eval = int(args.max_eval)
 
-    print(f"# Your ROOT DIR   : {ROOT_DIR}")
-    print(f"# Your dataset    : {dataset}")
-    print(f"# Your split ratio: {SPLIT_TYPE}")
-    print(f"# Your random seed: {seed}")
+    print(f"# ROOT DIR     : {ROOT_DIR}")
+    print(f"# DATA DIR     : {DATA_DIR}")
+
+    print(f"# dataset      : {dataset}")
+    print(f"# split ratio  : {SPLIT_TYPE}")
+    print(f"# random seed  : {seed}")
+    print(f"# batch size   : {bs}")
+    print(f"# learning rate: {lr}")
+    print(f"# epoch        : {epoch}")
+    print(f"# simple repre : {simple==1}")
+    print(f"# max eval     : {max_eval}")
 
     if SPLIT_TYPE == "811":
         splits = (0.8, 0.1, 0.1)
     elif SPLIT_TYPE == "523":
         splits = (0.5, 0.2, 0.3)
 
-    if dataset == "lipo":
-        bs = 128
-    else:
-        bs = 512
     problem = NaProblem()
-    problem.load_data(
-        load_data, dataset=dataset, sizes=splits, split_type="random", seed=seed
-    )
+
+    if simple == 1:
+        problem.load_data(
+            load_data_simple,
+            DATA_DIR=DATA_DIR,
+            dataset=dataset,
+            sizes=splits,
+            split_type="random",
+            seed=seed,
+        )
+    else:
+        problem.load_data(
+            load_data,
+            DATA_DIR=DATA_DIR,
+            dataset=dataset,
+            sizes=splits,
+            split_type="random",
+            seed=seed,
+        )
+
     problem.search_space(RegressionUQSpace)
     problem.hyperparameters(
         batch_size=bs,
-        learning_rate=1e-3,
+        learning_rate=lr,
         optimizer="adam",
-        num_epochs=30,
+        num_epochs=epoch,
         callbacks=dict(
             EarlyStopping=dict(monitor="val_loss", mode="min", verbose=0, patience=30),
             ModelCheckpoint=dict(
@@ -121,14 +153,23 @@ def main(seed, dataset, SPLIT_TYPE):
     problem.metrics(["mae"])
     problem.objective("-val_loss")
 
-    regevo_search = RegularizedEvolution(
-        problem,
-        get_evaluator(run_base_trainer),
-        log_dir=os.path.join(
-            ROOT_DIR, f"NEW_RE_{dataset}_random_{seed}_split_{SPLIT_TYPE}"
-        ),
-    )
-    regevo_search.search(max_evals=1000)
+    if simple == 1:
+        regevo_search = RegularizedEvolution(
+            problem,
+            get_evaluator(run_base_trainer),
+            log_dir=os.path.join(
+                ROOT_DIR, f"SIMPLE_RE_{dataset}_random_{seed}_split_{SPLIT_TYPE}"
+            ),
+        )
+    else:
+        regevo_search = RegularizedEvolution(
+            problem,
+            get_evaluator(run_base_trainer),
+            log_dir=os.path.join(
+                ROOT_DIR, f"NEW_RE_{dataset}_random_{seed}_split_{SPLIT_TYPE}"
+            ),
+        )
+    regevo_search.search(max_evals=max_eval)
 
 
 if __name__ == "__main__":
