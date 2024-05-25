@@ -1,4 +1,5 @@
 import os
+import argparse
 import itertools
 import tensorflow as tf
 import ray
@@ -11,7 +12,16 @@ from deephyper.search.nas import RegularizedEvolution
 from deephyper.gnn_uq.gnn_model import RegressionUQSpace, nll
 from deephyper.gnn_uq.load_data import load_data
 
-ROOT_DIR = "/scratch/gpfs/sj0161/autognnuq/"
+
+def get_dir(default_path, provided_path):
+    if provided_path:
+        if not os.path.exists(provided_path):
+            os.makedirs(provided_path)
+        return provided_path
+    else:
+        if not os.path.exists(default_path):
+            os.makedirs(default_path)
+        return default_path
 
 
 def get_evaluator(run_function):
@@ -57,6 +67,12 @@ def main(seed, dataset, SPLIT_TYPE):
         SPLIT_TYPE (str): Type of data split to be used.
 
     """
+    parser = argparse.ArgumentParser(description="Generate all figure.")
+
+    parser.add_argument("--ROOT_DIR", type=str, help="Root directory")
+    args = parser.parse_args()
+    ROOT_DIR = get_dir("./autognnuq/", args.ROOT_DIR)
+    print(f"# Your ROOT DIR: {ROOT_DIR}\n")
 
     if SPLIT_TYPE == "811":
         splits = (0.8, 0.1, 0.1)
@@ -78,7 +94,7 @@ def main(seed, dataset, SPLIT_TYPE):
         optimizer="adam",
         num_epochs=30,
         callbacks=dict(
-            EarlyStopping=dict(monitor="val_loss", mode="min", verbose=0, patience=50),
+            EarlyStopping=dict(monitor="val_loss", mode="min", verbose=0, patience=30),
             ModelCheckpoint=dict(
                 monitor="val_loss",
                 mode="min",

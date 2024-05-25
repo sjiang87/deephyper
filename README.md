@@ -24,6 +24,12 @@ $ pip install -e ".[default,analytics]"
 
 ## Quickstart
 
+Train `AutoGNNUQ` neural architecture search
+```console
+$ conda activate agu
+$ python train.py --ROOT_DIR "./autognnuq/"
+```
+
 Generate all figures from `AutoGNNUQ` result files.
 ```console
 $ conda activate agu
