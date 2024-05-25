@@ -61,7 +61,7 @@ def post_train(args, arch, name):
     elif mode == "random":
         POST_MODEL_DIR = os.path.join(
             POST_DIR,
-            f"NEW_POST_RANDOM_MODEL/post_model_{dataset}_random_{seed}_split_{SPLIT_TYPE}/",
+            f"NEW_POST_MODEL_RANDOM/post_model_{dataset}_random_{seed}_split_{SPLIT_TYPE}/",
         )
         POST_RESULT_DIR = os.path.join(
             POST_DIR,

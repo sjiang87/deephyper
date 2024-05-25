@@ -18,6 +18,7 @@ tox.ini
 *.pyold
 *.pdf
 *.pickle
+examples/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
