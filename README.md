@@ -24,8 +24,8 @@ $ pip install -e ".[default,analytics]"
 Please select a disk location and data storage preference based on your needs. When running the program, please update the following directory:
 - `--ROOT_DIR`: This is where search and post-training results are saved. The total results can take about 20 GB.
 - `--DATA_DIR`: This is where data CSV and pickle files are saved. The total results can take about 5 GB.
-- `--RESULT_DIR`: This directory is used to store the analysis results in CSV and pickle formats. The total results can take aboutd 1 GB.
-- `--PLOT_DIR`: This directory is used to store figures. The total results can take over 200 MB.
+- `--RESULT_DIR`: This directory is used to store the analysis results in CSV and pickle formats. The total results can take about 1 GB.
+- `--PLOT_DIR`: This directory is used to store figures. The total results can take about 200 MB.
 
 
 Here is the structure of the `deephyper` folder:
