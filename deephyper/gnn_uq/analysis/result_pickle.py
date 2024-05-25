@@ -5,7 +5,6 @@ from deephyper.gnn_uq.analysis import (
     get_result_random,
     get_result_simple,
     get_result_mc_dropout,
-    get_result_mc_dropout_random,
 )
 
 
