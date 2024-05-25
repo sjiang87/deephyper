@@ -12,7 +12,7 @@
 The `setup.py` file contains all the necessary packages to reproduce the results. The resulting Conda environment takes approximately 8 GB of space. Please ensure that sufficient disk space is available for installation.
 
 ```console
-$ git clone git@github.com:sjiang87/deephyper.git
+$ git clone https://github.com/sjiang87/deephyper.git
 $ cd deephyper
 $ conda create --name agu python=3.8.16
 $ conda activate agu
