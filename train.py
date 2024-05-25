@@ -70,9 +70,20 @@ def main(seed, dataset, SPLIT_TYPE):
     parser = argparse.ArgumentParser(description="Generate all figure.")
 
     parser.add_argument("--ROOT_DIR", type=str, help="Root directory")
+    parser.add_argument("--SPLIT_TYPE", type=str, help="Split ratio 811 or 523")
+    parser.add_argument("--seed", type=int, help="Random seed data split")
+    parser.add_argument("--dataset", type=str, help="Dataset [lipo, delaney, qm7, freesolv, qm9]")
+
     args = parser.parse_args()
     ROOT_DIR = get_dir("./autognnuq/", args.ROOT_DIR)
-    print(f"# Your ROOT DIR: {ROOT_DIR}\n")
+    SPLIT_TYPE = args.SPLIT_TYPE
+    seed = int(args.seed)
+    dataset = args.dataset
+
+    print(f"# Your ROOT DIR   : {ROOT_DIR}")
+    print(f"# Your dataset    : {dataset}")
+    print(f"# Your split ratio: {SPLIT_TYPE}")
+    print(f"# Your random seed: {seed}")
 
     if SPLIT_TYPE == "811":
         splits = (0.8, 0.1, 0.1)
@@ -120,36 +131,7 @@ def main(seed, dataset, SPLIT_TYPE):
     regevo_search.search(max_evals=1000)
 
 
-def get_combinations_for_index(idx, total_gpus=2):
-    """
-    Generate combinations of seed, dataset, and split type for a given index.
-
-    Args:
-        idx (int): The index to generate combinations for.
-        total_gpus (int, optional): Total number of GPUs. Defaults to 2.
-
-    Returns:
-        list: List of combinations for the specified index.
-
-    """
-    seeds = range(8)
-    datasets = ["qm7", "delaney", "freesolv", "lipo", "qm9"]
-    split_types = ["523"]
-
-    combinations = list(itertools.product(seeds, datasets, split_types))
-
-    combos_per_index = len(combinations) // total_gpus
-
-    start = idx * combos_per_index
-    end = start + combos_per_index if idx < total_gpus - 1 else len(combinations)
-
-    return combinations[start:end]
-
-
 if __name__ == "__main__":
-    idx = int(os.environ["SLURM_ARRAY_TASK_ID"])
-    max_idx = int(os.environ["SLURM_ARRAY_TASK_MAX"]) + 1
-
     available_gpus = tf.config.list_physical_devices("GPU")
     n_gpus = len(available_gpus)
     is_gpu_available = n_gpus > 0
@@ -165,6 +147,4 @@ if __name__ == "__main__":
         else:
             ray.init(num_cpus=4, log_to_driver=False)
 
-    for combo in get_combinations_for_index(idx, total_gpus=max_idx):
-        seed, dataset, split_type = combo
-        main(seed, dataset, split_type)
+        main()

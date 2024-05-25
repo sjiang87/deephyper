@@ -15,6 +15,7 @@ tox.ini
 .pre-commit-config.yaml
 .readthedocs.yaml
 .github/
+*.pyold
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -27,7 +27,7 @@ $ pip install -e ".[default,analytics]"
 Train `AutoGNNUQ` neural architecture search
 ```console
 $ conda activate agu
-$ python train.py --ROOT_DIR "./autognnuq/"
+$ python train.py --ROOT_DIR "./autognnuq/" --SPLIT_TYPE "523" --seed 0 --dataset "delaney"
 ```
 
 Generate all figures from `AutoGNNUQ` result files.
