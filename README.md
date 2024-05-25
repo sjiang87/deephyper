@@ -11,6 +11,7 @@ $ git clone git@github.com:sjiang87/deephyper.git
 $ cd deephyper
 $ conda create --name agu python=3.8.16
 $ conda activate agu
+$ # or source activate agu
 $ pip install -e ".[default,analytics]"
 ```
 
@@ -53,6 +54,8 @@ deephyper/
 │ ├── NEW_POST_MODEL/
 │ └── ... other_NAS_and_post_training_folders/
 ```
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deephyper/tutorials/blob/main/tutorials/colab/DeepHyper_101.ipynb)
 
 ## Quickstart
 
@@ -139,9 +142,9 @@ wait
 
 ```
 
-<!-- [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/deephyper/tutorials/blob/main/tutorials/colab/DeepHyper_101.ipynb)
 
-The black-box function named `run` is defined by taking an input job named `job` which contains the different variables to optimize `job.parameters`. Then the run-function is bound to an `Evaluator` in charge of distributing the computation of multiple evaluations. Finally, a Bayesian search named `CBO` is created and executed to find the values of config which **MAXIMIZE** the return value of `run(job)`. -->
+
+<!-- The black-box function named `run` is defined by taking an input job named `job` which contains the different variables to optimize `job.parameters`. Then the run-function is bound to an `Evaluator` in charge of distributing the computation of multiple evaluations. Finally, a Bayesian search named `CBO` is created and executed to find the values of config which **MAXIMIZE** the return value of `run(job)`. -->
 
 
 <!-- ## How do I learn more?

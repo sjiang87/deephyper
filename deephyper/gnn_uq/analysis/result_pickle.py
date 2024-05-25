@@ -37,7 +37,7 @@ def result_to_pickle(ROOT_DIR, RESULT_DIR, DATA_DIR):
 
     # other
     datasets = ["lipo", "delaney", "freesolv", "qm7"]
-    split_types = ["523", "811"]
+    split_types = ["523"]
     range_seeds = range(8)
     
     result_file = os.path.join(RESULT_DIR, "val_test_result.pickle")
