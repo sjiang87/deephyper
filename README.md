@@ -18,7 +18,7 @@ $ git clone git@github.com:sjiang87/deephyper.git
 $ cd deephyper
 $ conda create --name agu python=3.8.16
 $ conda activate agu
-$ pip install -e .[default,analytics]
+$ pip install -e ".[default,analytics]"
 ```
 
 
