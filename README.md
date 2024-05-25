@@ -87,10 +87,10 @@ $ python gen_fig.py \
 ```
 
 ### Additional Post-Training Weights
-Post-training weights can be downloaded here (16 GB).
+Post-training weights can be downloaded [here](https://drive.google.com/file/d/16TnIW2HIS6PtfIsnbDDoE0WGAkddcPT8/view?usp=sharing) (16 GB).
 
 ```console
-$ gdown "1QQlBp0whn-KfyC8pKrz9tUQ9Ny_mp7tS"
+$ gdown "16TnIW2HIS6PtfIsnbDDoE0WGAkddcPT8"
 $ tar -xzvf post_model.tar.gz
 ```
 
